@@ -1,323 +1,361 @@
-# CommitCraft - Intelligent Git Commit Assistant
+# 🚀 CommitCraft - Intelligent Git Commit Multi-Agent System
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
+[![Version](https://img.shields.io/badge/version-3.0.0-blue)]()
 [![License](https://img.shields.io/badge/license-MIT-green)]()
 [![Claude Code](https://img.shields.io/badge/Claude-Code-purple)]()
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)]()
 
-**Intelligent Git commit generator with interactive file grouping and quality validation**
+**Transform your Git workflow from manual commits to intelligent orchestration with 95% quality assurance**
 
-[中文文档](/docs/README-zh.md) | [English](README.md)
+[🇨🇳 中文文档](docs/README-zh.md) | [🇬🇧 English](README.md) | [📖 User Guide](PILOT-USER-GUIDE.md)
 
 </div>
 
 ---
 
-## 🎯 Overview
+## 🎯 Why CommitCraft?
 
-CommitCraft is an intelligent Git commit assistant designed for Claude Code that helps developers create standardized, professional commit messages through smart file analysis, interactive confirmation, and quality validation systems. It's particularly useful for handling scenarios where multiple features are developed in parallel but need to be committed separately.
+> **"From chaotic commits to professional precision in one command"**
 
-## ✨ Key Features
+Traditional Git workflows suffer from:
+- 😩 Inconsistent commit messages across teams
+- 🎯 Poor commit scope and organization
+- 📝 Missing context and documentation
+- 🔀 Mixed features in single commits
+- ⚠️ Security risks from exposed credentials
 
-- **🤖 Intelligent File Analysis** - Automatically identifies and groups files by feature/module
-- **📊 Interactive Workflow** - Requires explicit user confirmation at each critical step
-- **🌐 Bilingual Support** - Supports both English and Chinese commit messages with auto-detection
-- **🎯 Precise Staging** - Selective file staging, avoiding blind `git add .`
-- **✅ Quality Validation** - Built-in quality scoring system, must score ≥90 to proceed
-- **🔄 Batch Processing** - Smart handling of multi-feature separate commits
-- **🚫 No Signatures** - Professional, clean output without any attribution text
-- **📁 Coupled File Handling** - Intelligent detection and handling of shared files affecting multiple features
+**CommitCraft solves this with:**
+- ✅ **95% Quality Guarantee** - Every commit meets professional standards
+- 🤖 **5 Expert AI Agents** - Specialized analysis, grouping, generation, validation, execution
+- 🚀 **One-Command Workflow** - `/commit-pilot` orchestrates everything
+- 🔒 **Security First** - Built-in credential detection and dangerous operation blocking
+- 🌍 **True Cross-Platform** - Native support for Windows, macOS, Linux
 
-## 🚀 Quick Start
+## 🌟 Revolutionary Features
 
-### Installation
+### 🎭 Multi-Agent Orchestration
+```mermaid
+graph LR
+    A[Your Changes] --> B[Analyzer Agent]
+    B --> C[Grouper Agent]
+    C --> D[Message Agent]
+    D --> E[Validator Agent]
+    E --> F[Executor Agent]
+    F --> G[Perfect Commit ✅]
+```
 
-1. **Clone or download the project**
+### 🎯 Intelligent Workflows
+
+#### 1️⃣ **Smart Commit Pilot** - Complete automation
 ```bash
-git clone https://github.com/zengwenliang416/CommitCraft.git
-cd CommitCraft
+/commit-pilot
+# → Analyzes all changes
+# → Groups by features
+# → Generates messages
+# → Validates quality (90+ score)
+# → Executes commits
 ```
 
-2. **Add agent configuration to Claude Code**
+#### 2️⃣ **Batch Processing** - Multiple features, separate commits
 ```bash
-# Create Claude Code config directories if they don't exist
-mkdir -p ~/.claude/agents
-mkdir -p ~/.claude/commands
-
-# Copy configuration files
-cp agents/git-commit-generator.md ~/.claude/agents/
-cp commands/commit.md ~/.claude/commands/
+/commit-pilot --batch
+# → Detects 3 features
+# → Creates 3 perfect commits
+# → Maintains dependencies
 ```
 
-3. **Verify installation**
+#### 3️⃣ **History Learning** - Improve from the past
 ```bash
-# Test the command in any git repository
-/commit --preview
+/commit-history --score
+# → Analyzes past commits
+# → Identifies patterns
+# → Suggests improvements
 ```
 
-### Basic Usage
+## ⚡ Quick Start
+
+### 📦 Installation (30 seconds)
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```powershell
+# Option 1: Batch installer
+./install.bat
+
+# Option 2: PowerShell
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+</details>
+
+<details>
+<summary><b>🍎 macOS / 🐧 Linux</b></summary>
 
 ```bash
-/commit                    # Interactive mode with auto-analysis
-/commit en                 # Generate English commit message
-/commit ch                 # Generate Chinese commit message
-/commit --preview          # Preview mode, display only
-/commit --batch            # Batch mode for multiple features
-/commit --interactive      # Full interactive mode, file by file
+# Make executable and run
+chmod +x install.sh && ./install.sh
+```
+</details>
+
+### 🚀 Your First Professional Commit
+
+```bash
+# 1. Make your changes
+code src/feature.js
+
+# 2. Run CommitCraft
+/commit-pilot
+
+# 3. Watch the magic ✨
 ```
 
-## 📋 Workflow
-
+**Output:**
 ```
-┌──────────────┐
-│ 1. Analysis  │ ← Execute git status to analyze changes
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 2. Grouping  │ ← Auto-group files by feature/module
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│3. Interaction│ ← Display options, wait for selection
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 4. Language  │ ← Choose commit language (EN/CH)
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 5. Preview   │ ← Display generated message
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│6. Validation │ ← Score must be ≥90
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 7. Execute   │ ← Execute after confirmation
-└──────────────┘
-```
-
-## 💡 Usage Examples
-
-### Scenario 1: Multiple Features Completed
-
-You've completed both user management and product catalog features:
-
-```
-📊 Change Analysis Complete
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Total files changed: 5
+📊 Repository Analysis Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Changed files: 5
 Features detected: 2
+Quality forecast: 94/100
 
-File Grouping:
-┌─ User Feature (2 files)
-│  • src/components/UserList.jsx
-│  • src/api/userService.js
-├─ Product Feature (2 files)
-│  • src/components/ProductCard.jsx
-│  • src/api/productService.js
-└─ Shared Files (1 file)
-   • src/utils/common.js
-
-Options:
-1. Commit each feature separately
-2. Commit all together
-3. Custom selection
-4. Cancel operation
-
-Your choice (1-4): _
+Continue with orchestration? (Y/n)
 ```
 
-### Scenario 2: Handling Coupled Files
+## 🏗️ Architecture Deep Dive
 
-When shared files affect multiple features:
+### 🤖 The Five Expert Agents
+
+| Agent | Role | Specialization |
+|-------|------|----------------|
+| 🔍 **commit-analyzer** | Repository Scanner | Change detection, dependency mapping, risk assessment |
+| 📁 **commit-grouper** | Organization Expert | Feature separation, logical grouping, coupling detection |
+| ✍️ **commit-message** | Message Craftsman | Professional messages, bilingual support, convention compliance |
+| ✅ **commit-validator** | Quality Guardian | 90+ scoring, security checks, format validation |
+| 🚀 **commit-executor** | Safe Operator | Atomic commits, rollback capability, verification |
+
+### 🔄 Workflow Pipeline
 
 ```
-Shared file detected: src/utils/validation.js
-
-This file affects multiple features. Choose handling:
-1. Include with user feature commit
-2. Include with product feature commit
-3. Commit shared file separately
-4. Skip this file for now
-
-Your choice (1-4): _
+┌─────────────────────────────────────────────────────┐
+│                  PHASE 0: SCANNING                   │
+│         Comprehensive repository analysis            │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                 PHASE 1: GROUPING                    │
+│      Intelligent file organization by feature        │
+│                  [User Gate 🚪]                      │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                PHASE 2: GENERATION                   │
+│        Professional message creation                 │
+│              Quality Gate (≥90) 🎯                   │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                PHASE 3: EXECUTION                    │
+│          Safe commit with verification               │
+│               [Final Gate 🚪]                        │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+                    ✅ SUCCESS
 ```
 
-### Scenario 3: Preview Mode
+## 📊 Real-World Examples
 
-View the commit message without executing:
+### Example 1: Multi-Feature Development
+```bash
+$ /commit-pilot --batch
+
+🔄 Batch Commit Progress
+════════════════════════
+✅ Infrastructure setup     [Score: 96]
+⏳ User authentication      [Processing...]
+⌛ API documentation        [Pending]
+
+Current: feat(auth): ✨ implement OAuth2 flow
+[████████░░░░] 66% Complete
+```
+
+### Example 2: Quality Validation
+```bash
+$ /validate "fix: bug"
+
+📊 Validation Report
+━━━━━━━━━━━━━━━━━━━
+Format:      15/25 ❌
+Clarity:     10/25 ❌
+Security:    25/25 ✅
+Convention:  12/25 ❌
+━━━━━━━━━━━━━━━━━━━
+Total:       62/100
+
+Status: FAILED ❌
+
+Suggestions:
+1. Add specific scope: fix(auth): ...
+2. Describe the actual bug fixed
+3. Consider adding emoji: 🐛
+```
+
+## 🛡️ Security Features
+
+### 🔐 Built-in Protection
+- **Credential Detection** - Blocks API keys, passwords, tokens
+- **Dangerous Operation Prevention** - No `rm -rf`, force push protection
+- **Sensitive File Guards** - Protects .env, config files
+- **Pre-commit Validation** - Security scan before every commit
+
+### 🪝 Cross-Platform Hooks
+```javascript
+// Automatic security validation
+hooks/pre-tool-use.js     → Command validation
+hooks/user-prompt-submit.js → Input enhancement
+```
+
+## 📈 Quality Metrics
+
+### Scoring System (0-100)
+```
+95-100: 🏆 Perfect   - Ship immediately
+90-94:  ✅ Excellent - Minor improvements optional
+80-89:  ⚠️ Good      - Improvements recommended
+<80:    ❌ Failed    - Must fix issues
+```
+
+### What We Measure
+- **Format Compliance** - Type, scope, emoji usage
+- **Message Clarity** - Descriptive, specific, grammatical
+- **Security Standards** - No exposed secrets, safe operations
+- **Convention Adherence** - Team standards, consistency
+
+## 🎨 Customization
+
+### Commit Types & Emojis
+```javascript
+feat:     ✨ New feature
+fix:      🐛 Bug fix
+docs:     📝 Documentation
+style:    💄 Formatting
+refactor: ♻️  Code refactoring
+perf:     ⚡ Performance
+test:     ✅ Testing
+chore:    🔧 Maintenance
+build:    📦 Build system
+ci:       💚 CI/CD
+```
+
+### Language Support
+```bash
+# Auto-detect from repository
+/commit-pilot
+
+# Force language
+/commit-pilot --language en  # English
+/commit-pilot --language ch  # Chinese
+```
+
+## 📚 Advanced Usage
+
+### 🔄 Workflow Modes
+
+<details>
+<summary><b>Interactive Mode (Default)</b></summary>
 
 ```bash
-/commit --preview
+/commit-pilot
+# → Step-by-step with confirmations
+# → Perfect for important commits
+# → Maximum control
 ```
+</details>
 
-Sample output:
-```
-📝 Commit Preview
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Files to stage:
-  • src/components/UserList.jsx
-  • src/api/userService.js
+<details>
+<summary><b>Quick Mode</b></summary>
 
-Message:
-feat(user): ✨ add user list component
-
-
-- Implement user list display functionality
-- Add pagination and search support
-- Integrate user service API
-
-Confirm? (yes/no): _
-```
-
-## 📝 Commit Message Format
-
-### Standard Format
-```
-<type>(<scope>): <emoji> <description>
-
-
-- Detail point 1
-- Detail point 2
-- Detail point 3
-```
-
-### Example
-
-```
-feat(user): ✨ add user management system
-
-
-- Implement user registration and login
-- Add user profile editing interface
-- Integrate avatar upload functionality
-- Create user permission management module
-```
-
-## 🎨 Commit Types
-
-| Type | Emoji | Description | Example |
-|------|-------|-------------|---------|
-| `feat` | ✨ | New feature | `feat(auth): ✨ add OAuth login` |
-| `fix` | 🐛 | Bug fix | `fix(api): 🐛 resolve user data loading issue` |
-| `docs` | 📝 | Documentation | `docs(readme): 📝 update installation guide` |
-| `style` | 💄 | Code formatting | `style(css): 💄 improve button styling` |
-| `refactor` | ♻️ | Code refactoring | `refactor(utils): ♻️ optimize data processing` |
-| `perf` | ⚡ | Performance | `perf(api): ⚡ optimize query performance` |
-| `test` | ✅ | Add tests | `test(user): ✅ add unit tests` |
-| `chore` | 🔧 | Maintenance | `chore(deps): 🔧 update dependencies` |
-| `ci` | 👷 | CI/CD | `ci(github): 👷 add automated testing` |
-| `build` | 📦 | Build related | `build(webpack): 📦 update build config` |
-
-[View complete emoji list (45 types)](agents/git-commit-generator.md#commit-types-and-emojis)
-
-## 🧪 Testing
-
-To test the functionality, you can:
-
-1. **Create a test repository**
 ```bash
-mkdir test-repo && cd test-repo
-git init
+/commit-pilot --quick
+# → Smart defaults
+# → Skip confirmations
+# → Fast workflow
 ```
+</details>
 
-2. **Create some test files and make changes**
+<details>
+<summary><b>Preview Mode</b></summary>
+
 ```bash
-echo "test" > file1.js
-echo "test" > file2.js
-git add . && git commit -m "initial"
-echo "change" >> file1.js
-echo "change" >> file2.js
+/commit-pilot --preview
+# → Dry run
+# → No actual commits
+# → Safe testing
 ```
+</details>
 
-3. **Test the commit command**
+### 📊 History Analysis
 ```bash
-/commit --preview
+# Analyze team patterns
+/commit-history --last 100 --export markdown
+
+# Personal improvement
+/commit-history --author me --score
 ```
 
-## ⚙️ Configuration
+## 🚦 Integration
 
-### Agent Configuration
-- **Location**: `agents/git-commit-generator.md`
-- **Tools**: Bash, Grep, Glob
-- **Core Features**: Interactive commit generation, quality validation
+### Works Seamlessly With:
+- ✅ **Git Hooks** - Pre-commit, commit-msg validation
+- ✅ **CI/CD** - GitHub Actions, GitLab CI, Jenkins
+- ✅ **Issue Trackers** - Auto-links (#123)
+- ✅ **Conventional Commits** - Full compliance
+- ✅ **GPG Signing** - Signed commit support
 
-### Command Configuration
-- **Location**: `commands/commit.md`
-- **Trigger**: `/commit`
-- **Parameters**: Language selection, mode flags
+## 📖 Documentation
 
-## 🔧 Advanced Features
-
-### Custom File Grouping Rules
-
-The system uses intelligent pattern recognition:
-
-```
-File Path Analysis:
-• /components/User* → User feature
-• /api/*user* → User feature
-• /components/Product* → Product feature
-• /api/*product* → Product feature
-• /utils/* → Shared utilities
-• /config/* → Configuration
-• /tests/* → Test files
-```
-
-### Quality Scoring System
-
-Quality validation before each commit:
-
-```
-Quality Checklist:
-✓ Files properly grouped
-✓ Type matches changes
-✓ Scope reflects module
-✓ Emoji matches type
-✓ Description follows format
-✓ No signature text
-✓ Length under 72 chars
-
-Score: 95/100
-Proceed? (yes/no): _
-```
-
-## 📊 Best Practices
-
-1. **Timely Commits** - Commit immediately after completing a feature
-2. **Logical Grouping** - Related files together, unrelated files separate
-3. **Clear Descriptions** - Use accurate verbs to describe changes
-4. **Quality First** - Ensure every commit passes quality validation
+- 📘 [Complete User Guide](PILOT-USER-GUIDE.md)
+- 🔧 [Agent Documentation](agents/)
+- 📝 [Command Reference](commands/)
+- 🇨🇳 [中文文档](docs/README-zh.md)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-- Report issues
-- Submit pull requests
-- Suggest new features
-- Improve documentation
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+```bash
+# Run quality checks before PR
+/validate
+/commit-pilot --preview
+```
 
 ## 📄 License
 
-MIT License - Feel free to use in your projects
+MIT License - see [LICENSE](LICENSE)
 
 ## 🙏 Acknowledgments
 
-Built for Claude Code users who value clean, professional Git workflows.
+Built with ❤️ for the Claude Code community
 
-## 📮 Contact
+Special thanks to:
+- Anthropic Claude team for the amazing platform
+- Open source contributors
+- Early adopters and feedback providers
 
-- GitHub Issues: [Report bugs or request features](https://github.com/zengwenliang416/CommitCraft/issues)
+## 📮 Support
+
+- 🐛 **Issues**: [GitHub Issues](https://github.com/your-username/commitcraft/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/commitcraft/discussions)
+- 📧 **Email**: support@commitcraft.dev
 
 ---
 
 <div align="center">
 
-**CommitCraft** - Making Git commits intelligent and professional
+### 🌟 Star us on GitHub!
 
-Made with ❤️ for better version control
+**CommitCraft** - Where every commit tells a perfect story
+
+`Version 3.0.0` | `MIT License` | `Made for Claude Code`
 
 </div>

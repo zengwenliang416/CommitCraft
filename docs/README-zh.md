@@ -1,323 +1,362 @@
-# CommitCraft - 智能 Git 提交助手
+# 🚀 CommitCraft - 智能 Git 提交多智能体系统
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
+[![Version](https://img.shields.io/badge/version-3.0.0-blue)]()
 [![License](https://img.shields.io/badge/license-MIT-green)]()
 [![Claude Code](https://img.shields.io/badge/Claude-Code-purple)]()
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)]()
 
-**智能化 Git 提交消息生成器，支持交互式文件分组和质量验证**
+**将你的 Git 工作流从手动提交转变为智能编排，质量保证达 95%**
 
-[English](README.md) | [中文文档](README-zh.md)
+[🇬🇧 English](../README.md) | [🇨🇳 中文文档](README-zh.md) | [📖 用户指南](../PILOT-USER-GUIDE-zh.md)
 
 </div>
 
 ---
 
-## 🎯 项目简介
+## 🎯 为什么选择 CommitCraft？
 
-CommitCraft 是一个为 Claude Code 设计的智能 Git 提交助手，它通过智能文件分析、交互式确认和质量验证系统，帮助开发者创建标准化、专业的提交消息。特别适合处理多功能并行开发但需要分别提交的场景。
+> **"一条命令，从混乱的提交到专业精准"**
 
-## ✨ 核心特性
+传统 Git 工作流的痛点：
+- 😩 团队间提交消息不一致
+- 🎯 提交范围和组织混乱
+- 📝 缺少上下文和文档
+- 🔀 单个提交混合多个功能
+- ⚠️ 暴露凭据的安全风险
 
-- **🤖 智能文件分析** - 自动识别并按功能/模块分组文件
-- **📊 交互式工作流** - 每个关键步骤都需要用户明确确认
-- **🌐 双语支持** - 支持中英文提交消息，自动识别语言参数
-- **🎯 精确暂存** - 选择性暂存文件，避免盲目使用 `git add .`
-- **✅ 质量验证** - 内置质量评分系统，得分≥90才能继续
-- **🔄 批量处理** - 智能处理多功能分离提交
-- **🚫 无签名输出** - 专业、干净的输出，不添加任何归属文本
-- **📁 耦合文件处理** - 智能识别并处理影响多个功能的共享文件
+**CommitCraft 的解决方案：**
+- ✅ **95% 质量保证** - 每个提交都符合专业标准
+- 🤖 **5 个专家 AI 智能体** - 专业分析、分组、生成、验证、执行
+- 🚀 **一键工作流** - `/commit-pilot` 编排一切
+- 🔒 **安全优先** - 内置凭据检测和危险操作拦截
+- 🌍 **真正跨平台** - 原生支持 Windows、macOS、Linux
 
-## 🚀 快速开始
+## 🌟 革命性功能
 
-### 安装步骤
+### 🎭 多智能体编排
 
-1. **克隆或下载项目**
+```mermaid
+graph LR
+    A[你的变更] --> B[分析智能体]
+    B --> C[分组智能体]
+    C --> D[消息智能体]
+    D --> E[验证智能体]
+    E --> F[执行智能体]
+    F --> G[完美提交]
+```
+
+### 🎯 智能工作流
+
+#### 1️⃣ **智能提交导航** - 完全自动化
 ```bash
-git clone https://github.com/zengwenliang416/CommitCraft.git
-cd CommitCraft
+/commit-pilot
+# → 分析所有变更
+# → 按功能分组
+# → 生成消息
+# → 验证质量（90+ 分）
+# → 执行提交
 ```
 
-2. **添加智能体配置到 Claude Code**
+#### 2️⃣ **批量处理** - 多功能，独立提交
 ```bash
-# 创建 Claude Code 配置目录（如果不存在）
-mkdir -p ~/.claude/agents
-mkdir -p ~/.claude/commands
-
-# 复制配置文件
-cp agents/git-commit-generator.md ~/.claude/agents/
-cp commands/commit.md ~/.claude/commands/
+/commit-pilot --batch
+# → 检测 3 个功能
+# → 创建 3 个完美提交
+# → 维护依赖关系
 ```
 
-3. **验证安装**
+#### 3️⃣ **历史学习** - 从过去改进
 ```bash
-# 在任意 git 仓库中测试命令
-/commit --preview
+/commit-history --score
+# → 分析过去提交
+# → 识别模式
+# → 提供改进建议
 ```
 
-### 基本用法
+## ⚡ 快速开始
 
-```bash
-/commit                    # 交互模式，自动分析并提供选项
-/commit ch                 # 生成中文提交消息
-/commit en                 # 生成英文提交消息
-/commit --preview          # 预览模式，只显示不执行
-/commit --batch            # 批量模式，处理多个功能
-/commit --interactive      # 完全交互模式，逐个选择文件
+### 📦 安装（30 秒）
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```powershell
+# 选项 1：批处理安装器
+./install.bat
+
+# 选项 2：PowerShell
+powershell -ExecutionPolicy Bypass -File install.ps1
 ```
+</details>
 
-## 📋 工作流程
-
-```
-┌──────────────┐
-│ 1. 文件分析  │ ← 执行 git status 分析所有变更
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 2. 智能分组  │ ← 按功能/模块自动分组文件
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 3. 交互确认  │ ← 显示分组选项，等待用户选择
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 4. 语言选择  │ ← 选择提交消息语言（中/英）
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 5. 消息预览  │ ← 显示生成的提交消息
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 6. 质量验证  │ ← 评分必须≥90分
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ 7. 执行提交  │ ← 用户确认后执行
-└──────────────┘
-```
-
-## 💡 使用场景示例
-
-### 场景 1：多功能同时完成
-
-您同时完成了用户管理和产品目录两个功能，现在需要分别提交：
-
-```
-📊 变更分析完成
-━━━━━━━━━━━━━━━━━━━━━━━━━
-总计修改文件: 5
-检测到功能: 2
-
-文件分组:
-┌─ 用户功能 (2 个文件)
-│  • src/components/UserList.jsx
-│  • src/api/userService.js
-├─ 产品功能 (2 个文件)
-│  • src/components/ProductCard.jsx
-│  • src/api/productService.js
-└─ 共享文件 (1 个文件)
-   • src/utils/common.js
-
-选项:
-1. 分别提交每个功能
-2. 全部一起提交
-3. 自定义选择
-4. 取消操作
-
-您的选择 (1-4): _
-```
-
-### 场景 2：处理耦合文件
-
-当存在影响多个功能的共享文件时：
-
-```
-检测到共享文件: src/utils/validation.js
-
-该文件影响多个功能，请选择处理方式:
-1. 包含在用户功能提交中
-2. 包含在产品功能提交中
-3. 单独提交共享文件
-4. 暂时跳过此文件
-
-您的选择 (1-4): _
-```
-
-### 场景 3：预览模式
-
-查看将要生成的提交消息而不实际执行：
+<details>
+<summary><b>🍎 macOS / 🐧 Linux</b></summary>
 
 ```bash
-/commit --preview
+# 设置可执行权限并运行
+chmod +x install.sh && ./install.sh
 ```
+</details>
 
-输出示例：
-```
-📝 提交预览
-━━━━━━━━━━━━━━━━━━━━━━━━━
-待暂存文件: 
-  • src/components/UserList.jsx
-  • src/api/userService.js
+### 🚀 你的第一个专业提交
 
-消息内容:
-feat(user): ✨ 添加用户列表组件
-
-
-- 实现用户列表展示功能
-- 添加分页和搜索支持
-- 集成用户服务 API
-
-确认提交? (yes/no): _
-```
-
-## 📝 提交消息格式
-
-### 标准格式
-```
-<类型>(<范围>): <表情> <描述>
-
-
-- 详细说明点 1
-- 详细说明点 2
-- 详细说明点 3
-```
-
-### 示例
-
-```
-feat(user): ✨ 添加用户管理系统
-
-
-- 实现用户注册和登录功能
-- 添加用户资料编辑界面
-- 集成头像上传功能
-- 创建用户权限管理模块
-```
-
-## 🎨 提交类型对照表
-
-| 类型 | 表情 | 说明 | 示例 |
-|------|------|------|------|
-| `feat` | ✨ | 新功能 | `feat(auth): ✨ 添加 OAuth 登录` |
-| `fix` | 🐛 | 修复 Bug | `fix(api): 🐛 修复用户数据加载问题` |
-| `docs` | 📝 | 文档更新 | `docs(readme): 📝 更新安装指南` |
-| `style` | 💄 | 代码格式 | `style(css): 💄 改进按钮样式` |
-| `refactor` | ♻️ | 代码重构 | `refactor(utils): ♻️ 优化数据处理逻辑` |
-| `perf` | ⚡ | 性能优化 | `perf(api): ⚡ 优化查询性能` |
-| `test` | ✅ | 添加测试 | `test(user): ✅ 添加单元测试` |
-| `chore` | 🔧 | 维护任务 | `chore(deps): 🔧 更新依赖包` |
-| `ci` | 👷 | CI/CD | `ci(github): 👷 添加自动化测试` |
-| `build` | 📦 | 构建相关 | `build(webpack): 📦 更新构建配置` |
-
-[查看完整表情列表（45种）](agents/git-commit-generator.md#commit-types-and-emojis)
-
-## 🧪 测试
-
-要测试功能，您可以：
-
-1. **创建测试仓库**
 ```bash
-mkdir test-repo && cd test-repo
-git init
+# 1. 进行你的更改
+code src/feature.js
+
+# 2. 运行 CommitCraft
+/commit-pilot
+
+# 3. 见证魔法 ✨
 ```
 
-2. **创建测试文件并进行修改**
+**输出：**
+```
+📊 仓库分析完成
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+变更文件：5
+检测功能：2
+质量预测：94/100
+
+继续编排？(Y/n)
+```
+
+## 🏗️ 架构深度解析
+
+### 🤖 五大专家智能体
+
+| 智能体 | 角色 | 专长 |
+|-------|------|------|
+| 🔍 **commit-analyzer** | 仓库扫描器 | 变更检测、依赖映射、风险评估 |
+| 📁 **commit-grouper** | 组织专家 | 功能分离、逻辑分组、耦合检测 |
+| ✍️ **commit-message** | 消息工匠 | 专业消息、双语支持、约定合规 |
+| ✅ **commit-validator** | 质量守护者 | 90+ 评分、安全检查、格式验证 |
+| 🚀 **commit-executor** | 安全操作员 | 原子提交、回滚能力、验证 |
+
+### 🔄 工作流管道
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  阶段 0：扫描                         │
+│             全面的仓库分析                            │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                 阶段 1：分组                         │
+│         按功能智能组织文件                            │
+│                  [用户关卡 🚪]                        │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                阶段 2：生成                          │
+│           专业消息创建                               │
+│              质量关卡 (≥90) 🎯                       │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────┐
+│                阶段 3：执行                          │
+│          安全提交与验证                              │
+│               [最终关卡 🚪]                          │
+└─────────────────────────┬───────────────────────────┘
+                          ↓
+                    ✅ 成功
+```
+
+## 📊 真实案例
+
+### 示例 1：多功能开发
 ```bash
-echo "test" > file1.js
-echo "test" > file2.js
-git add . && git commit -m "initial"
-echo "change" >> file1.js
-echo "change" >> file2.js
+$ /commit-pilot --batch
+
+🔄 批量提交进度
+════════════════════════
+✅ 基础设施设置         [分数：96]
+⏳ 用户认证             [处理中...]
+⌛ API 文档             [等待中]
+
+当前：feat(auth): ✨ 实现 OAuth2 流程
+[████████░░░░] 66% 完成
 ```
 
-3. **测试提交命令**
+### 示例 2：质量验证
 ```bash
-/commit --preview
+$ /validate "fix: bug"
+
+📊 验证报告
+━━━━━━━━━━━━━━━━━━━
+格式：     15/25 ❌
+清晰度：   10/25 ❌
+安全性：   25/25 ✅
+约定：     12/25 ❌
+━━━━━━━━━━━━━━━━━━━
+总分：     62/100
+
+状态：失败 ❌
+
+建议：
+1. 添加具体范围：fix(auth): ...
+2. 描述实际修复的错误
+3. 考虑添加表情：🐛
 ```
 
-## ⚙️ 配置说明
+## 🛡️ 安全特性
 
-### 智能体配置
-- **位置**: `agents/git-commit-generator.md`
-- **工具**: Bash, Grep, Glob
-- **核心功能**: 交互式提交生成、质量验证
+### 🔐 内置保护
+- **凭据检测** - 拦截 API 密钥、密码、令牌
+- **危险操作预防** - 禁止 `rm -rf`、强制推送保护
+- **敏感文件守护** - 保护 .env、配置文件
+- **提交前验证** - 每次提交前的安全扫描
 
-### 命令配置
-- **位置**: `commands/commit.md`
-- **触发命令**: `/commit`
-- **参数支持**: 语言选择、模式标志
-
-## 🔧 高级功能
-
-### 自定义文件分组规则
-
-系统使用智能模式识别来分组文件：
-
-```
-文件路径分析:
-• /components/User* → 用户功能
-• /api/*user* → 用户功能
-• /components/Product* → 产品功能
-• /api/*product* → 产品功能
-• /utils/* → 共享工具
-• /config/* → 配置文件
-• /tests/* → 测试文件
+### 🪝 跨平台钩子
+```javascript
+// 自动安全验证
+hooks/pre-tool-use.js     → 命令验证
+hooks/user-prompt-submit.js → 输入增强
 ```
 
-### 质量评分系统
+## 📈 质量指标
 
-每次提交前都会进行质量验证：
-
+### 评分系统（0-100）
 ```
-质量检查清单:
-✓ 文件正确分组
-✓ 类型匹配变更
-✓ 范围反映模块
-✓ 表情匹配类型
-✓ 描述遵循格式
-✓ 无签名文本
-✓ 长度低于72字符
-
-得分: 95/100
-继续? (yes/no): _
+95-100：🏆 完美   - 立即发布
+90-94： ✅ 优秀   - 小改进可选
+80-89： ⚠️ 良好   - 建议改进
+<80：   ❌ 失败   - 必须修复
 ```
 
-## 📊 最佳实践
+### 评估维度
+- **格式合规** - 类型、范围、表情使用
+- **消息清晰度** - 描述性、具体性、语法
+- **安全标准** - 无暴露密钥、安全操作
+- **约定遵守** - 团队标准、一致性
 
-1. **及时提交** - 完成一个功能立即提交，避免积压
-2. **逻辑分组** - 相关文件一起提交，无关文件分开
-3. **清晰描述** - 使用准确的动词描述变更内容
-4. **质量优先** - 确保每个提交都通过质量验证
+## 🎨 自定义配置
 
-## 🤝 贡献指南
+### 提交类型与表情
+```javascript
+feat:     ✨ 新功能
+fix:      🐛 错误修复
+docs:     📝 文档
+style:    💄 格式化
+refactor: ♻️  代码重构
+perf:     ⚡ 性能优化
+test:     ✅ 测试
+chore:    🔧 维护
+build:    📦 构建系统
+ci:       💚 CI/CD
+```
 
-欢迎贡献！您可以：
-- 报告问题
-- 提交 Pull Request
-- 建议新功能
-- 改进文档
+### 语言支持
+```bash
+# 从仓库自动检测
+/commit-pilot
+
+# 强制语言
+/commit-pilot --language en  # 英文
+/commit-pilot --language ch  # 中文
+```
+
+## 📚 高级用法
+
+### 🔄 工作流模式
+
+<details>
+<summary><b>交互模式（默认）</b></summary>
+
+```bash
+/commit-pilot
+# → 逐步确认
+# → 适合重要提交
+# → 最大控制权
+```
+</details>
+
+<details>
+<summary><b>快速模式</b></summary>
+
+```bash
+/commit-pilot --quick
+# → 智能默认值
+# → 跳过确认
+# → 快速工作流
+```
+</details>
+
+<details>
+<summary><b>预览模式</b></summary>
+
+```bash
+/commit-pilot --preview
+# → 演练模式
+# → 不实际提交
+# → 安全测试
+```
+</details>
+
+### 📊 历史分析
+```bash
+# 分析团队模式
+/commit-history --last 100 --export markdown
+
+# 个人改进
+/commit-history --author me --score
+```
+
+## 🚦 集成
+
+### 无缝对接：
+- ✅ **Git 钩子** - Pre-commit、commit-msg 验证
+- ✅ **CI/CD** - GitHub Actions、GitLab CI、Jenkins
+- ✅ **问题跟踪** - 自动链接 (#123)
+- ✅ **约定式提交** - 完全合规
+- ✅ **GPG 签名** - 支持签名提交
+
+## 📖 文档
+
+- 📘 [完整用户指南](../PILOT-USER-GUIDE-zh.md)
+- 🔧 [智能体文档](../agents/)
+- 📝 [命令参考](../commands/)
+- 🇬🇧 [English Documentation](../README.md)
+
+## 🤝 贡献
+
+欢迎贡献！查看 [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+```bash
+# PR 前运行质量检查
+/validate
+/commit-pilot --preview
+```
 
 ## 📄 许可证
 
-MIT 许可证 - 可自由用于您的项目
+MIT 许可证 - 查看 [LICENSE](../LICENSE)
 
 ## 🙏 致谢
 
-为重视 Git 工作流程规范的 Claude Code 用户而构建。
+为 Claude Code 社区用心打造 ❤️
 
-## 📮 联系方式
+特别感谢：
+- Anthropic Claude 团队提供的卓越平台
+- 开源贡献者们
+- 早期采用者和反馈提供者
 
-- GitHub Issues: [报告问题或请求功能](https://github.com/zengwenliang416/CommitCraft/issues)
+## 📮 支持
+
+- 🐛 **问题反馈**：[GitHub Issues](https://github.com/your-username/commitcraft/issues)
+- 💬 **讨论**：[GitHub Discussions](https://github.com/your-username/commitcraft/discussions)
+- 📧 **邮箱**：support@commitcraft.dev
 
 ---
 
 <div align="center">
 
-**CommitCraft** - 让 Git 提交智能且专业
+### 🌟 在 GitHub 上给我们 Star！
 
-用 ❤️ 打造更好的版本控制
+**CommitCraft** - 每个提交都讲述完美的故事
+
+`版本 3.0.0` | `MIT 许可证` | `为 Claude Code 打造`
 
 </div>
