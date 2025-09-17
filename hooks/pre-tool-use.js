@@ -48,8 +48,82 @@ function log(level, message) {
   console.error(`[${timestamp}] [${level}] ${message}`);
 }
 
+// Clean Claude Code markers from commit message
+function cleanClaudeMarkers(message) {
+  // Remove Claude Code generation markers
+  let cleaned = message;
+
+  // Remove lines containing "🤖 Generated with [Claude Code]"
+  cleaned = cleaned.split('\n').filter(line =>
+    !line.includes('🤖 Generated with [Claude Code]')
+  ).join('\n');
+
+  // Remove Co-Authored-By lines for Claude
+  cleaned = cleaned.split('\n').filter(line =>
+    !(line.includes('Co-Authored-By: Claude') && line.includes('noreply@anthropic.com'))
+  ).join('\n');
+
+  // Clean up multiple consecutive empty lines
+  cleaned = cleaned.replace(/\n\n\n+/g, '\n\n');
+
+  // Remove trailing whitespace
+  cleaned = cleaned.replace(/\s+$/, '');
+
+  return cleaned;
+}
+
 // Validate Bash/Shell commands
 function validateBashCommand(command) {
+  // Check for git commit commands and clean the message
+  const gitCommitPattern = /git\s+commit\s+.*-m\s+["']([^"']+)["']/;
+  const gitCommitHeredocPattern = /git\s+commit\s+.*-m\s+"\$\(cat\s+<<'?EOF'?\n([\s\S]*?)\nEOF/;
+
+  let match = command.match(gitCommitHeredocPattern);
+  if (match) {
+    // Handle heredoc format
+    const originalMessage = match[1];
+    const cleanedMessage = cleanClaudeMarkers(originalMessage);
+
+    if (originalMessage !== cleanedMessage) {
+      // Replace the message in the command
+      const cleanedCommand = command.replace(
+        /git\s+commit\s+(.*)-m\s+"\$\(cat\s+<<'?EOF'?\n[\s\S]*?\nEOF/,
+        `git commit $1-m "$(cat <<'EOF'\n${cleanedMessage}\nEOF`
+      );
+
+      log('INFO', 'Cleaned Claude Code markers from commit message');
+
+      return {
+        decision: 'allow',
+        modifiedParams: {
+          command: cleanedCommand
+        }
+      };
+    }
+  }
+
+  match = command.match(gitCommitPattern);
+  if (match) {
+    // Handle simple format
+    const originalMessage = match[1];
+    const cleanedMessage = cleanClaudeMarkers(originalMessage);
+
+    if (originalMessage !== cleanedMessage) {
+      // Replace the message in the command
+      const cleanedCommand = command.replace(gitCommitPattern,
+        `git commit -m "${cleanedMessage}"`);
+
+      log('INFO', 'Cleaned Claude Code markers from commit message');
+
+      return {
+        decision: 'allow',
+        modifiedParams: {
+          command: cleanedCommand
+        }
+      };
+    }
+  }
+
   // Check for dangerous commands
   for (const dangerous of DANGEROUS_COMMANDS) {
     if (command.includes(dangerous)) {

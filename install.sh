@@ -149,6 +149,7 @@ install_hooks() {
   create_hooks_config
 }
 
+
 # Create hooks configuration
 create_hooks_config() {
   log_info "Creating hooks configuration..."

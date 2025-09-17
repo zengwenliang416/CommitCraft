@@ -33,6 +33,7 @@
 - 📚 **完整过程文档** - 自动生成执行追踪文档
 - 🔒 **安全优先** - 内置凭据检测和危险操作拦截
 - 🌍 **真正跨平台** - 原生支持 Windows、macOS、Linux
+- 🧹 **自动清理提交** - 自动移除 Claude Code 生成标记
 
 ## 🌟 革命性功能
 
@@ -228,9 +229,15 @@ $ /validate "fix: bug"
 ### 🪝 跨平台钩子
 ```javascript
 // 自动安全验证
-hooks/pre-tool-use.js     → 命令验证
+hooks/pre-tool-use.js       → 命令验证 & Claude Code 标记清理
 hooks/user-prompt-submit.js → 输入增强
 ```
+
+### 🧹 Claude Code 集成
+- **自动标记移除** - 移除 `🤖 Generated with [Claude Code]` 标记
+- **清理协作者信息** - 过滤 `Co-Authored-By: Claude` 条目
+- **透明操作** - 无需用户干预，自动运行
+- **全局覆盖** - 适用于通过 Claude Code 进行的所有 git 提交
 
 ## 📈 质量指标
 

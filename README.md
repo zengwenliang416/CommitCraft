@@ -33,6 +33,7 @@ Traditional Git workflows suffer from:
 - 📚 **Process Documentation** - Automatic execution tracking and audit trail
 - 🔒 **Security First** - Built-in credential detection and dangerous operation blocking
 - 🌍 **True Cross-Platform** - Native support for Windows, macOS, Linux
+- 🧹 **Auto Clean Commits** - Automatically removes Claude Code markers from commit messages
 
 ## 🌟 Revolutionary Features
 
@@ -227,9 +228,15 @@ Suggestions:
 ### 🪝 Cross-Platform Hooks
 ```javascript
 // Automatic security validation
-hooks/pre-tool-use.js     → Command validation
+hooks/pre-tool-use.js       → Command validation & Claude Code marker cleanup
 hooks/user-prompt-submit.js → Input enhancement
 ```
+
+### 🧹 Claude Code Integration
+- **Automatic Marker Removal** - Removes `🤖 Generated with [Claude Code]` from commits
+- **Clean Co-Author Lines** - Filters out `Co-Authored-By: Claude` entries
+- **Transparent Operation** - Works automatically without user intervention
+- **Global Coverage** - Applies to all git commits made through Claude Code
 
 ## 📈 Quality Metrics
 

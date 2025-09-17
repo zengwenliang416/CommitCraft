@@ -131,6 +131,24 @@ function Install-Commands {
 function Install-Hooks {
     Write-Info "Installing hooks..."
 
+    # Copy Node.js hooks
+    $hooks = @(
+        "pre-tool-use.js",
+        "user-prompt-submit.js"
+    )
+
+    foreach ($hook in $hooks) {
+        $sourcePath = Join-Path $PROJECT_DIR "hooks\$hook"
+        $destPath = Join-Path $HOOKS_DIR $hook
+
+        if (Test-Path $sourcePath) {
+            Copy-Item -Path $sourcePath -Destination $destPath -Force
+            Write-Success "Installed hook: $hook"
+        } else {
+            Write-Warning "Hook not found: $hook"
+        }
+    }
+
     # Create PowerShell version of pre-tool-use hook
     $preToolUseContent = @'
 # Pre-Tool Use Hook for CommitCraft (PowerShell version)
@@ -233,6 +251,7 @@ Workflow agents:
     # Create hooks configuration
     Create-HooksConfig
 }
+
 
 # Create hooks configuration
 function Create-HooksConfig {
