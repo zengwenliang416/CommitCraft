@@ -30,6 +30,7 @@ Traditional Git workflows suffer from:
 - ✅ **95% Quality Guarantee** - Every commit meets professional standards
 - 🤖 **5 Expert AI Agents** - Specialized analysis, grouping, generation, validation, execution
 - 🚀 **One-Command Workflow** - `/commit-pilot` orchestrates everything
+- 📚 **Process Documentation** - Automatic execution tracking and audit trail
 - 🔒 **Security First** - Built-in credential detection and dangerous operation blocking
 - 🌍 **True Cross-Platform** - Native support for Windows, macOS, Linux
 
@@ -48,7 +49,7 @@ graph LR
 
 ### 🎯 Intelligent Workflows
 
-#### 1️⃣ **Smart Commit Pilot** - Complete automation
+#### 1️⃣ **Smart Commit Pilot** - Complete automation with documentation
 ```bash
 /commit-pilot
 # → Analyzes all changes
@@ -56,14 +57,16 @@ graph LR
 # → Generates messages
 # → Validates quality (90+ score)
 # → Executes commits
+# → Creates process documentation (.claude/commitcraft/session-*)
 ```
 
 #### 2️⃣ **Batch Processing** - Multiple features, separate commits
 ```bash
-/commit-pilot --batch
-# → Detects 3 features
-# → Creates 3 perfect commits
+/batch-commit
+# → Detects multiple features
+# → Creates separate perfect commits
 # → Maintains dependencies
+# → Documents each commit process
 ```
 
 #### 3️⃣ **History Learning** - Improve from the past
@@ -72,6 +75,19 @@ graph LR
 # → Analyzes past commits
 # → Identifies patterns
 # → Suggests improvements
+```
+
+#### 4️⃣ **Process Documentation** - Complete traceability (NEW!)
+```bash
+# Automatically generated for each session
+.claude/commitcraft/
+└── commitcraft-20240117-143025/
+    ├── 00-repository-analysis.md   # Repository scan
+    ├── 01-grouping-strategy.md     # Grouping decisions
+    ├── 02-commit-messages.md       # Generated messages
+    ├── 03-validation-report.md     # Quality validation
+    ├── 04-execution-log.md         # Execution details
+    └── summary.json                # Session summary
 ```
 
 ## ⚡ Quick Start

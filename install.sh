@@ -21,19 +21,19 @@ readonly PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Logging functions
 log_info() {
-  echo -e "${BLUE}[INFO]${NC} $1"
+  printf "${BLUE}[INFO]${NC} %s\n" "$1"
 }
 
 log_success() {
-  echo -e "${GREEN}[✓]${NC} $1"
+  printf "${GREEN}[✓]${NC} %s\n" "$1"
 }
 
 log_warning() {
-  echo -e "${YELLOW}[⚠]${NC} $1"
+  printf "${YELLOW}[⚠]${NC} %s\n" "$1"
 }
 
 log_error() {
-  echo -e "${RED}[✗]${NC} $1"
+  printf "${RED}[✗]${NC} %s\n" "$1"
 }
 
 # Banner
@@ -214,47 +214,45 @@ verify_installation() {
 
 # Show usage instructions
 show_usage() {
-  cat << EOF
-
-${GREEN}═══════════════════════════════════════════════════════════${NC}
-${GREEN}Installation Complete!${NC}
-${GREEN}═══════════════════════════════════════════════════════════${NC}
-
-${BLUE}Available Commands:${NC}
-
-  ${GREEN}/commit-pilot${NC}        - Full commit workflow orchestrator
-  ${GREEN}/analyze${NC}             - Analyze repository changes
-  ${GREEN}/group${NC}               - Group files for commits
-  ${GREEN}/validate${NC}            - Validate commit messages
-  ${GREEN}/batch-commit${NC}        - Process multiple commits
-  ${GREEN}/commit-history${NC}      - Analyze commit history
-
-${BLUE}Quick Start:${NC}
-
-  1. Make some changes to your files
-  2. Run: ${GREEN}/commit-pilot${NC}
-  3. Follow the interactive prompts
-
-${BLUE}For help:${NC}
-  Run: ${GREEN}/commit-pilot --help${NC}
-
-${BLUE}Features:${NC}
-
-  ✨ Multi-agent orchestration
-  📊 Intelligent file grouping
-  🌐 Bilingual support (EN/CH)
-  ✅ Quality validation (≥90 score)
-  🔒 Security hooks
-  📦 Batch processing
-
-${BLUE}Documentation:${NC}
-
-  README: ${PROJECT_DIR}/README.md
-  中文文档: ${PROJECT_DIR}/docs/README-zh.md
-
-${YELLOW}Note:${NC} Restart Claude Code for changes to take effect.
-
-EOF
+  printf "\n"
+  printf "${GREEN}═══════════════════════════════════════════════════════════${NC}\n"
+  printf "${GREEN}Installation Complete!${NC}\n"
+  printf "${GREEN}═══════════════════════════════════════════════════════════${NC}\n"
+  printf "\n"
+  printf "${BLUE}Available Commands:${NC}\n"
+  printf "\n"
+  printf "  ${GREEN}/commit-pilot${NC}        - Full commit workflow orchestrator\n"
+  printf "  ${GREEN}/analyze${NC}             - Analyze repository changes\n"
+  printf "  ${GREEN}/group${NC}               - Group files for commits\n"
+  printf "  ${GREEN}/validate${NC}            - Validate commit messages\n"
+  printf "  ${GREEN}/batch-commit${NC}        - Process multiple commits\n"
+  printf "  ${GREEN}/commit-history${NC}      - Analyze commit history\n"
+  printf "\n"
+  printf "${BLUE}Quick Start:${NC}\n"
+  printf "\n"
+  printf "  1. Make some changes to your files\n"
+  printf "  2. Run: ${GREEN}/commit-pilot${NC}\n"
+  printf "  3. Follow the interactive prompts\n"
+  printf "\n"
+  printf "${BLUE}For help:${NC}\n"
+  printf "  Run: ${GREEN}/commit-pilot --help${NC}\n"
+  printf "\n"
+  printf "${BLUE}Features:${NC}\n"
+  printf "\n"
+  printf "  ✨ Multi-agent orchestration\n"
+  printf "  📊 Intelligent file grouping\n"
+  printf "  🌐 Bilingual support (EN/CH)\n"
+  printf "  ✅ Quality validation (≥90 score)\n"
+  printf "  🔒 Security hooks\n"
+  printf "  📦 Batch processing\n"
+  printf "\n"
+  printf "${BLUE}Documentation:${NC}\n"
+  printf "\n"
+  printf "  README: ${PROJECT_DIR}/README.md\n"
+  printf "  中文文档: ${PROJECT_DIR}/docs/README-zh.md\n"
+  printf "\n"
+  printf "${YELLOW}Note:${NC} Restart Claude Code for changes to take effect.\n"
+  printf "\n"
 }
 
 # Uninstall function

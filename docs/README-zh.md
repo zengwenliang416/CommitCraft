@@ -30,6 +30,7 @@
 - ✅ **95% 质量保证** - 每个提交都符合专业标准
 - 🤖 **5 个专家 AI 智能体** - 专业分析、分组、生成、验证、执行
 - 🚀 **一键工作流** - `/commit-pilot` 编排一切
+- 📚 **完整过程文档** - 自动生成执行追踪文档
 - 🔒 **安全优先** - 内置凭据检测和危险操作拦截
 - 🌍 **真正跨平台** - 原生支持 Windows、macOS、Linux
 
@@ -49,7 +50,7 @@ graph LR
 
 ### 🎯 智能工作流
 
-#### 1️⃣ **智能提交导航** - 完全自动化
+#### 1️⃣ **智能提交导航** - 完全自动化 + 文档追踪
 ```bash
 /commit-pilot
 # → 分析所有变更
@@ -57,14 +58,16 @@ graph LR
 # → 生成消息
 # → 验证质量（90+ 分）
 # → 执行提交
+# → 生成完整执行文档 (.claude/commitcraft/session-*)
 ```
 
 #### 2️⃣ **批量处理** - 多功能，独立提交
 ```bash
-/commit-pilot --batch
-# → 检测 3 个功能
-# → 创建 3 个完美提交
+/batch-commit
+# → 检测多个功能
+# → 创建独立提交
 # → 维护依赖关系
+# → 每个提交都有文档记录
 ```
 
 #### 3️⃣ **历史学习** - 从过去改进
@@ -73,6 +76,19 @@ graph LR
 # → 分析过去提交
 # → 识别模式
 # → 提供改进建议
+```
+
+#### 4️⃣ **过程文档** - 完整追踪（新功能！）
+```bash
+# 每次执行自动生成文档
+.claude/commitcraft/
+└── commitcraft-20240117-143025/
+    ├── 00-repository-analysis.md   # 仓库分析
+    ├── 01-grouping-strategy.md     # 分组策略
+    ├── 02-commit-messages.md       # 生成的消息
+    ├── 03-validation-report.md     # 质量验证
+    ├── 04-execution-log.md         # 执行日志
+    └── summary.json                # 会话摘要
 ```
 
 ## ⚡ 快速开始
@@ -125,15 +141,15 @@ code src/feature.js
 
 ## 🏗️ 架构深度解析
 
-### 🤖 五大专家智能体
+### 🤖 五大专家智能体（支持上下文链式传递）
 
-| 智能体 | 角色 | 专长 |
-|-------|------|------|
-| 🔍 **commit-analyzer** | 仓库扫描器 | 变更检测、依赖映射、风险评估 |
-| 📁 **commit-grouper** | 组织专家 | 功能分离、逻辑分组、耦合检测 |
-| ✍️ **commit-message** | 消息工匠 | 专业消息、双语支持、约定合规 |
-| ✅ **commit-validator** | 质量守护者 | 90+ 评分、安全检查、格式验证 |
-| 🚀 **commit-executor** | 安全操作员 | 原子提交、回滚能力、验证 |
+| 智能体 | 角色 | 专长 | 上下文能力 |
+|-------|------|------|-----------|
+| 🔍 **commit-analyzer** | 仓库扫描器 | 变更检测、依赖映射、风险评估 | 生成初始分析文档 |
+| 📁 **commit-grouper** | 组织专家 | 功能分离、逻辑分组、耦合检测 | 读取分析文档，生成分组策略 |
+| ✍️ **commit-message** | 消息工匠 | 专业消息、双语支持、约定合规 | 读取分组策略，生成上下文消息 |
+| ✅ **commit-validator** | 质量守护者 | 90+ 评分、安全检查、格式验证 | 读取所有文档，交叉验证 |
+| 🚀 **commit-executor** | 安全操作员 | 原子提交、回滚能力、验证 | 读取验证报告，执行提交 |
 
 ### 🔄 工作流管道
 
@@ -270,6 +286,7 @@ ci:       💚 CI/CD
 # → 逐步确认
 # → 适合重要提交
 # → 最大控制权
+# → 生成完整文档
 ```
 </details>
 
@@ -281,6 +298,7 @@ ci:       💚 CI/CD
 # → 智能默认值
 # → 跳过确认
 # → 快速工作流
+# → 仍生成文档
 ```
 </details>
 
@@ -292,6 +310,18 @@ ci:       💚 CI/CD
 # → 演练模式
 # → 不实际提交
 # → 安全测试
+# → 生成预览文档
+```
+</details>
+
+<details>
+<summary><b>无文档模式</b></summary>
+
+```bash
+/commit-pilot --skip-docs
+# → 跳过文档生成
+# → 更快执行
+# → 适合简单提交
 ```
 </details>
 
@@ -302,6 +332,18 @@ ci:       💚 CI/CD
 
 # 个人改进
 /commit-history --author me --score
+```
+
+### 📚 过程文档管理
+```bash
+# 查看最近的会话文档
+ls -la .claude/commitcraft/
+
+# 查看特定会话的文档
+cat .claude/commitcraft/commitcraft-20240117-143025/summary.json
+
+# 清理旧文档（保留最近10个会话）
+find .claude/commitcraft -type d -name "commitcraft-*" | sort | head -n -10 | xargs rm -rf
 ```
 
 ## 🚦 集成
