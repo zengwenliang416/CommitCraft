@@ -1,8 +1,9 @@
 ---
 name: commit-pilot
-description: Multi-agent orchestrator for intelligent git commit workflow
+description: Multi-agent orchestrator for intelligent git commit workflow with process documentation
 arguments: "[COMMIT_DESCRIPTION]"
-options: "[--help] [--batch] [--quick] [--preview] [--skip-validation] [--language <en|ch>]"
+options: "[--help] [--batch] [--quick] [--preview] [--skip-validation] [--skip-docs] [--language <en|ch>]"
+tools: Task, Write, Bash, Glob, Grep
 ---
 
 # Usage
@@ -20,6 +21,7 @@ Create professional git commits through multi-agent orchestration with intellige
 - `--quick`: Skip interactive confirmations, use smart defaults
 - `--preview`: Dry run mode, show what would be committed without executing
 - `--skip-validation`: Skip quality validation (not recommended)
+- `--skip-docs`: Skip process documentation generation
 - `--language <en|ch>`: Force commit message language (default: auto-detect)
 
 ## Quick Start
@@ -100,80 +102,241 @@ MORE INFO:
   Docs: See README.md for detailed documentation
 ```
 
+## Your Role
+You are the Commit Workflow Orchestrator managing an intelligent Git commit pipeline using Claude Code Sub-Agents. **Your primary responsibility is analyzing repository changes, ensuring commit quality through interactive confirmation, and maintaining comprehensive process documentation.** You coordinate specialized agents to achieve 95%+ commit quality standards.
+
+## Initial Repository Scanning Phase
+
+### Automatic Repository Analysis
+Upon receiving this command, FIRST analyze the repository to understand current changes:
+
+```
+Use Task tool with commit-analyzer agent: "Perform comprehensive change analysis for intelligent commit workflow.
+
+## Analysis Tasks:
+1. **Repository Status**:
+   - Current branch and upstream status
+   - Modified, added, deleted, renamed files
+   - Staged vs unstaged changes
+
+2. **Change Classification**:
+   - Code changes: features, fixes, refactoring, performance
+   - Documentation changes: README, API docs, comments
+   - Configuration changes: build, environment, dependencies
+
+3. **Feature Detection**:
+   - Identify logical feature boundaries
+   - Detect module dependencies
+   - Map component relationships
+
+Output: Comprehensive change analysis report including:
+- Repository state summary
+- Files categorized by type and feature
+- Dependency relationships
+- Recommended grouping strategy
+
+DO NOT save files yet - return the analysis content directly."
+```
+
+### Session Setup
+After receiving analysis results:
+```bash
+# Generate session ID based on timestamp
+session_name="commitcraft-$(date +%Y%m%d-%H%M%S)"
+
+# Create session directory
+Ensure directory ./.claude/commitcraft/{session_name}/ exists
+
+# Save analysis results
+Save analysis to: ./.claude/commitcraft/{session_name}/00-repository-analysis.md
+```
+
 ## Workflow Phases
 
-### Phase 0: Repository Context Scanning
-The pilot begins with comprehensive repository analysis to understand the current state and changes.
+### Phase 0: Repository Analysis (Automatic)
+Analyze current repository state and all pending changes.
+Save results to: `./.claude/commitcraft/{session_name}/00-repository-analysis.md`
 
-### Phase 1: Change Analysis & Grouping
-Intelligent file grouping based on features, dependencies, and logical boundaries.
+### Phase 1: Change Grouping & Planning (Interactive)
+Group related changes and plan commit strategy.
+Document grouping to: `./.claude/commitcraft/{session_name}/01-grouping-strategy.md`
 
-### Phase 2: Commit Planning
-Generate professional commit messages with quality validation and user confirmation.
+### 🛑 CRITICAL STOP POINT: Grouping Approval Gate 🛑
+**IMPORTANT**: After presenting grouping strategy, MUST STOP and wait for user approval.
 
-### Phase 3: Execution
-Safe, verified commit execution with rollback capabilities.
+### Phase 2: Message Generation & Validation
+Generate professional commit messages and validate quality.
+Save messages to: `./.claude/commitcraft/{session_name}/02-commit-messages.md`
+Save validation to: `./.claude/commitcraft/{session_name}/03-validation-report.md`
 
-## Sub-Agent Chain Execution
+### 🛑 CRITICAL STOP POINT: Commit Approval Gate 🛑
+**IMPORTANT**: After achieving 90+ quality score, MUST STOP and wait for user approval before executing.
 
-Execute the following sub-agent chain:
+### Phase 3: Execution (Only After Approval)
+Execute commits ONLY after user explicitly confirms.
+Save execution log to: `./.claude/commitcraft/{session_name}/04-execution-log.md`
 
-First use the **commit-analyzer** sub agent to analyze repository changes and identify feature boundaries, then use the **commit-grouper** sub agent to organize files into logical commit groups with user confirmation, then use the **commit-message** sub agent to generate professional commit messages in the appropriate language, then use the **commit-validator** sub agent to validate quality (must achieve 90+ score), and finally use the **commit-executor** sub agent to safely stage and commit the changes.
+## Phase 1: Change Grouping Process
 
-The workflow includes quality gates between phases requiring explicit user approval before proceeding.
+After analysis completes, orchestrate the grouping process:
 
-## Quality Gates
-
-### Gate 1: Grouping Confirmation (Phase 1)
-- **Requirement**: User must approve file grouping strategy
-- **Options**: Approve, regroup, or manual selection
-- **Bypass**: Use `--quick` to auto-approve sensible groupings
-
-### Gate 2: Message Quality (Phase 2)
-- **Requirement**: Quality score must be ≥ 90/100
-- **Validation**: Format, clarity, security, conventions
-- **Bypass**: Use `--skip-validation` (not recommended)
-
-### Gate 3: Execution Approval (Phase 3)
-- **Requirement**: Final user confirmation before commit
-- **Preview**: Complete diff and message shown
-- **Bypass**: Use `--quick` for auto-confirmation
-
-## Interactive Decision Flow
-
+### 1. Execute Grouping Agent
 ```
-┌─────────────────────────────────────┐
-│  📊 Repository Analysis Complete     │
-│  ═══════════════════════════════    │
-│  Changed files: 12                  │
-│  Features detected: 3                │
-│  Recommended strategy: Batch         │
-│                                      │
-│  Continue with analysis? (Y/n)      │
-└─────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────┐
-│  📁 File Grouping Proposal          │
-│  ═══════════════════════════════    │
-│  Group 1: Authentication (4 files)  │
-│  Group 2: User Profile (5 files)    │
-│  Group 3: Shared Utils (3 files)    │
-│                                      │
-│  [1] Approve grouping               │
-│  [2] Modify grouping                 │
-│  [3] View details                   │
-│  Select: _                          │
-└─────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────┐
-│  ✅ Quality Validation Passed       │
-│  ═══════════════════════════════    │
-│  Score: 95/100                      │
-│  Format: ✓ | Security: ✓ | Style: ✓ │
-│                                      │
-│  Proceed with commit? (Y/n)         │
-└─────────────────────────────────────┘
+Use Task tool with commit-grouper agent: "
+Session Path: ./.claude/commitcraft/{session_name}/
+Previous Analysis: Repository analysis has been saved to 00-repository-analysis.md
+
+Task: Read the analysis and propose logical commit groups
+Instructions:
+1. First read ./.claude/commitcraft/{session_name}/00-repository-analysis.md to understand changes
+2. Create intelligent file groupings based on features/modules found in analysis
+3. Ensure atomic commits (each group is independently functional)
+4. Order groups by dependency (utilities first, features second)
+5. Calculate confidence score for grouping strategy
+6. Return grouping proposal with rationale
+7. DO NOT save files yet - return content and confidence score"
 ```
+
+### 2. Interactive Grouping Review
+After receiving grouper's proposal:
+1. Present grouping strategy with confidence score
+2. Show file distribution across groups
+3. Ask user: **"Accept this grouping? (yes/no/modify)"**
+4. If modify: collect feedback and re-run grouper with adjustments
+5. If yes: proceed to save grouping
+
+### 3. Save Grouping Strategy
+After user approval, save to: `./.claude/commitcraft/{session_name}/01-grouping-strategy.md`
+
+## 🛑 Grouping Approval Gate
+
+After grouping strategy is finalized:
+```markdown
+📦 Grouping Strategy Complete
+════════════════════════════
+
+Proposed {groups_count} commits:
+1. {group_1_name} ({files_count} files)
+2. {group_2_name} ({files_count} files)
+...
+
+Confidence: {confidence_score}%
+
+Proceed with message generation? (yes/no)
+```
+**WAIT for user response**. Only proceed if user confirms.
+
+## Phase 2: Message Generation & Validation
+
+**ONLY execute after receiving grouping approval**
+
+### 1. Generate Messages for Each Group
+```
+For each group, use Task tool with commit-message agent:
+"Session Path: ./.claude/commitcraft/{session_name}/
+Previous Documents:
+- 00-repository-analysis.md (change analysis)
+- 01-grouping-strategy.md (grouping decisions)
+
+Generate professional commit message for:
+Group: {group_name}
+Files: {file_list}
+Language: {--language option or auto}
+
+Instructions:
+1. Read 01-grouping-strategy.md to understand this group's purpose and rationale
+2. Follow Conventional Commits format
+3. Clear subject line (50-72 chars)
+4. Detailed body explaining what and why based on group context
+5. Return message content only - DO NOT save files"
+```
+
+Save all messages to: `./.claude/commitcraft/{session_name}/02-commit-messages.md`
+
+### 2. Validate Each Message
+```
+For each message, use Task tool with commit-validator agent:
+"Session Path: ./.claude/commitcraft/{session_name}/
+Previous Documents Available:
+- 00-repository-analysis.md
+- 01-grouping-strategy.md
+- 02-commit-messages.md
+
+Validate commit message:
+Message: {generated_message}
+Files: {group_files}
+
+Instructions:
+1. Read grouping strategy to understand group context
+2. Validate message accurately describes the changes
+3. Apply validation criteria:
+   - Format compliance (30 points)
+   - Content quality (40 points)
+   - Security check (20 points)
+   - Convention adherence (10 points)
+4. Return validation score and issues - DO NOT save files"
+```
+
+Save validation report to: `./.claude/commitcraft/{session_name}/03-validation-report.md`
+
+## 🛑 Commit Approval Gate
+
+After validation completes:
+```markdown
+✅ Validation Complete
+═════════════════════
+
+Quality Scores:
+- Commit 1: {score_1}/100
+- Commit 2: {score_2}/100
+Average: {avg_score}/100
+
+All commits meet quality standards.
+Execute commits now? (yes/no)
+```
+**CRITICAL**: MUST STOP here and wait for user approval.
+Only proceed to Phase 3 if user explicitly confirms.
+
+## Phase 3: Execution Process (After Approval Only)
+
+**ONLY execute after receiving explicit user approval**
+
+### Execute Each Commit
+```
+For each approved group, use Task tool with commit-executor agent:
+"Session Path: ./.claude/commitcraft/{session_name}/
+Previous Documents Available:
+- 01-grouping-strategy.md (file lists)
+- 02-commit-messages.md (approved messages)
+- 03-validation-report.md (quality confirmation)
+
+Execute commit for group: {group_name}
+Message: {approved_message}
+Files: {group_files}
+
+Instructions:
+1. Optionally read validation report to confirm this commit is approved
+2. Stage specified files exactly as listed
+3. Create commit with the provided message
+4. Capture commit hash
+5. Return execution result - DO NOT save files"
+```
+
+Save execution log to: `./.claude/commitcraft/{session_name}/04-execution-log.md`
+
+### Generate Session Summary
+After all commits complete, create summary:
+```json
+{
+  "session_id": "{session_name}",
+  "timestamp": "{completion_time}",
+  "commits_created": {count},
+  "files_processed": {count},
+  "average_quality": {score},
+  "status": "success"
+}
+```
+Save to: `./.claude/commitcraft/{session_name}/summary.json`
 
 ## Batch Processing Mode
 
@@ -323,6 +486,37 @@ Common issues:
 - "Quality score too low": Review message format guidelines
 - "Grouping failed": Try manual selection with `/group`
 - "Execution failed": Check git configuration and permissions
+
+## Process Documentation Structure
+
+All outputs saved to `./.claude/commitcraft/{session_name}/`:
+```
+.claude/
+└── commitcraft/
+    └── commitcraft-20240117-143025/     # Session directory
+        ├── 00-repository-analysis.md    # Initial change analysis
+        ├── 01-grouping-strategy.md      # File grouping decisions
+        ├── 02-commit-messages.md        # Generated messages
+        ├── 03-validation-report.md      # Quality validation results
+        ├── 04-execution-log.md         # Commit execution details
+        └── summary.json                 # Session summary with metrics
+```
+
+## Important Implementation Notes
+
+### DO:
+- **Create session directory first**: Ensure `./.claude/commitcraft/{session_name}/` exists before any saves
+- **Agents return content only**: Use "DO NOT save files - return content" in all agent prompts
+- **Orchestrator saves documents**: After receiving agent responses, save to appropriate files
+- **Stop at approval gates**: MUST wait for explicit user confirmation at critical points
+- **Include timestamp in session name**: Format as `commitcraft-YYYYMMDD-HHMMSS`
+- **Pass context between agents**: Each agent receives accumulated context from previous phases
+
+### DON'T:
+- Let agents save files directly (they should only return content)
+- Skip user approval gates (unless --quick option is used)
+- Proceed without meeting quality thresholds
+- Create documentation if --skip-docs option is provided
 
 ## Related Commands
 

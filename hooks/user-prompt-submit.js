@@ -92,8 +92,285 @@ function detectLanguagePreference(prompt) {
   return 'auto';
 }
 
+// Check if this is a help command
+function isHelpCommand(prompt) {
+  // Match any CommitCraft command with --help, -h, or help flag
+  const helpPatterns = [
+    /^\s*\/commit-pilot\s+(--help|-h|help)\s*$/i,
+    /^\s*\/analyze\s+(--help|-h|help)\s*$/i,
+    /^\s*\/group\s+(--help|-h|help)\s*$/i,
+    /^\s*\/validate\s+(--help|-h|help)\s*$/i,
+    /^\s*\/batch-commit\s+(--help|-h|help)\s*$/i,
+    /^\s*\/commit-history\s+(--help|-h|help)\s*$/i
+  ];
+
+  return helpPatterns.some(pattern => pattern.test(prompt));
+}
+
+// Extract command name from help request
+function extractCommandFromHelp(prompt) {
+  const match = prompt.match(/^\s*\/(\S+)\s+(--help|-h|help)\s*$/i);
+  return match ? match[1].toLowerCase() : null;
+}
+
+// Generate help text based on command
+function generateHelpText(command) {
+  const helpTexts = {
+    'commit-pilot': generateCommitPilotHelp(),
+    'analyze': generateAnalyzeHelp(),
+    'group': generateGroupHelp(),
+    'validate': generateValidateHelp(),
+    'batch-commit': generateBatchCommitHelp(),
+    'commit-history': generateCommitHistoryHelp()
+  };
+
+  return helpTexts[command] || generateGeneralHelp();
+}
+
+// Generate general help for all commands
+function generateGeneralHelp() {
+  return `
+CommitCraft - Multi-Agent Git Commit System
+═════════════════════════════════════════════
+
+Available Commands:
+
+  /commit-pilot        Full commit workflow orchestrator
+  /analyze             Analyze repository changes
+  /group               Group files for commits
+  /validate            Validate commit messages
+  /batch-commit        Process multiple commits
+  /commit-history      Analyze commit history
+
+Use '/[command] --help' for detailed information about each command.
+
+Examples:
+  /commit-pilot --help
+  /analyze --help
+  /group --help
+`;
+}
+
+// Generate help text for commit-pilot
+function generateCommitPilotHelp() {
+  return `
+CommitCraft Pilot - Intelligent Git Commit Orchestrator
+════════════════════════════════════════════════════════
+
+USAGE:
+  /commit-pilot [DESCRIPTION] [OPTIONS]
+
+DESCRIPTION:
+  Multi-agent system that analyzes, groups, validates, and
+  executes perfect git commits through intelligent orchestration.
+
+OPTIONS:
+  --help              Show this help message
+  --batch             Process multiple features separately
+  --quick             Use smart defaults, skip confirmations
+  --preview           Dry run without actual commits
+  --skip-validation   Skip quality checks (not recommended)
+  --language <en|ch>  Force message language
+
+AGENTS:
+  • commit-analyzer   - Analyzes repository changes
+  • commit-grouper    - Groups files intelligently
+  • commit-message    - Generates commit messages
+  • commit-validator  - Validates quality (90+ required)
+  • commit-executor   - Executes commits safely
+
+WORKFLOW:
+  1. Analyze repository changes
+  2. Group files by feature/module
+  3. Generate professional messages
+  4. Validate quality standards
+  5. Execute commits with verification
+
+EXAMPLES:
+  Basic:       /commit-pilot
+  With desc:   /commit-pilot "fix login bug"
+  Batch:       /commit-pilot --batch
+  Preview:     /commit-pilot --preview
+  Quick mode:  /commit-pilot --quick
+  Chinese:     /commit-pilot --language ch
+
+QUALITY STANDARDS:
+  • Format compliance required
+  • Quality score must be ≥ 90/100
+  • Security validation enforced
+  • Convention adherence checked
+
+MORE INFO:
+  Repository: https://github.com/zengwenliang416/CommitCraft
+  Docs: See README.md for detailed documentation
+`;
+}
+
+// Generate help text for analyze command
+function generateAnalyzeHelp() {
+  return `
+/analyze - Repository Change Analyzer
+══════════════════════════════════════
+
+USAGE:
+  /analyze [OPTIONS]
+
+DESCRIPTION:
+  Analyzes all changes in your repository and provides detailed
+  insights about modified files, their relationships, and impact.
+
+OPTIONS:
+  --deep              Perform deep analysis with dependency tracking
+  --summary           Show only summary without details
+  --format <format>   Output format: text, json, markdown (default: text)
+
+OUTPUT INCLUDES:
+  • File change statistics
+  • Module dependency analysis
+  • Feature boundary detection
+  • Change classification (feat/fix/docs/etc)
+  • Recommended commit strategy
+
+EXAMPLES:
+  /analyze
+  /analyze --deep
+  /analyze --format json
+`;
+}
+
+// Generate help text for group command
+function generateGroupHelp() {
+  return `
+/group - Intelligent File Grouper
+═══════════════════════════════
+
+USAGE:
+  /group [OPTIONS]
+
+DESCRIPTION:
+  Groups related files into logical commits based on features,
+  modules, and dependencies.
+
+OPTIONS:
+  --strategy <type>   Grouping strategy: feature, module, type (default: feature)
+  --max-files <n>     Maximum files per group (default: 10)
+  --interactive       Interactive mode for manual adjustments
+
+STRATEGIES:
+  • feature   - Group by feature/functionality
+  • module    - Group by code module/component
+  • type      - Group by change type (feat/fix/docs)
+
+EXAMPLES:
+  /group
+  /group --strategy module
+  /group --interactive
+`;
+}
+
+// Generate help text for validate command
+function generateValidateHelp() {
+  return `
+/validate - Commit Message Validator
+═════════════════════════════════════
+
+USAGE:
+  /validate <message> [OPTIONS]
+
+DESCRIPTION:
+  Validates commit messages against quality standards and
+  conventional commits format.
+
+OPTIONS:
+  --strict            Enforce strict validation (score ≥ 95)
+  --fix               Suggest fixes for issues
+  --format <type>     Expected format: conventional, angular, custom
+
+VALIDATION CRITERIA:
+  • Format compliance (30 points)
+  • Content quality (40 points)
+  • Security check (20 points)
+  • Convention adherence (10 points)
+
+EXAMPLES:
+  /validate "feat: add user authentication"
+  /validate --strict
+  /validate --fix
+`;
+}
+
+// Generate help text for batch-commit command
+function generateBatchCommitHelp() {
+  return `
+/batch-commit - Batch Commit Processor
+═══════════════════════════════════════
+
+USAGE:
+  /batch-commit [OPTIONS]
+
+DESCRIPTION:
+  Processes multiple features as separate commits in sequence,
+  ideal for large changesets with multiple logical units.
+
+OPTIONS:
+  --auto              Automatic mode without confirmations
+  --preview           Preview all commits before execution
+  --parallel <n>      Process n commits in parallel (default: 1)
+
+WORKFLOW:
+  1. Analyzes all changes
+  2. Groups into multiple commits
+  3. Generates messages for each
+  4. Validates all messages
+  5. Executes commits sequentially
+
+EXAMPLES:
+  /batch-commit
+  /batch-commit --preview
+  /batch-commit --auto
+`;
+}
+
+// Generate help text for commit-history command
+function generateCommitHistoryHelp() {
+  return `
+/commit-history - Commit History Analyzer
+══════════════════════════════════════════
+
+USAGE:
+  /commit-history [OPTIONS]
+
+DESCRIPTION:
+  Analyzes commit history to understand patterns, conventions,
+  and team practices for better commit message generation.
+
+OPTIONS:
+  --limit <n>         Number of commits to analyze (default: 50)
+  --author <name>     Filter by author
+  --since <date>      Analyze commits since date
+  --stats             Show detailed statistics
+
+OUTPUT:
+  • Common commit patterns
+  • Message format preferences
+  • Language usage (EN/CH)
+  • Type distribution (feat/fix/docs)
+  • Average message quality
+
+EXAMPLES:
+  /commit-history
+  /commit-history --limit 100
+  /commit-history --since "2024-01-01"
+`;
+}
+
 // Enhance prompt with context
 function enhancePrompt(originalPrompt) {
+  // Check if this is a help command first
+  if (isHelpCommand(originalPrompt)) {
+    return generateCommitPilotHelp();
+  }
+
   if (!detectCommitIntent(originalPrompt)) {
     return originalPrompt;
   }
@@ -181,6 +458,24 @@ function main() {
     try {
       // Use input as user prompt
       const userPrompt = input.trim() || 'commit my changes';
+
+      // Check if this is a help command
+      if (isHelpCommand(userPrompt)) {
+        // For help commands, directly output the help text and block the command
+        const commandName = extractCommandFromHelp(userPrompt);
+        const helpText = generateHelpText(commandName);
+        const result = {
+          decision: 'block',
+          message: helpText,
+          metadata: {
+            is_help_command: true,
+            command: commandName,
+            timestamp: new Date().toISOString()
+          }
+        };
+        console.log(JSON.stringify(result, null, 2));
+        process.exit(0);
+      }
 
       // Process the prompt
       const enhancedPrompt = enhancePrompt(userPrompt);

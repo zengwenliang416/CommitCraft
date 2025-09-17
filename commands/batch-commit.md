@@ -1,6 +1,7 @@
 ---
 name: batch-commit
-description: Sequential multi-feature commit orchestration
+description: Sequential multi-feature commit orchestration with process documentation
+tools: Task, Write, Bash, Glob, Grep
 ---
 
 ## Usage
@@ -17,23 +18,92 @@ Process multiple features as separate commits in a single workflow session.
 - `--plan` - Preview commit plan before execution
 - `--continue` - Resume interrupted batch session
 - `--order <strategy>` - Specify commit order (dependencies/size/alpha)
+- `--skip-docs` - Skip process documentation generation
+
+## Your Role
+You are the Batch Commit Orchestrator managing sequential multi-feature commits. You coordinate specialized agents to process multiple features as separate commits while maintaining comprehensive documentation.
+
+## Initial Setup Phase
+
+### Session Initialization
+Upon receiving this command, first create a session for documentation:
+
+```bash
+# Generate batch session ID
+session_name="batch-$(date +%Y%m%d-%H%M%S)"
+
+# Create session directory (unless --skip-docs)
+mkdir -p ./.claude/commitcraft/{session_name}/
+```
 
 ## Workflow
 
 Execute a coordinated multi-agent chain for processing multiple feature commits sequentially.
 
 ### Phase 0: Repository Analysis
-First use the **commit-analyzer** sub agent to perform comprehensive repository analysis, identifying all changes, feature boundaries, and dependencies.
+First use the **commit-analyzer** sub agent to perform comprehensive repository analysis:
+
+```
+Use Task tool with commit-analyzer agent: "
+Perform comprehensive batch commit analysis.
+
+Identify:
+1. All changes in repository
+2. Natural feature boundaries
+3. Dependencies between files
+4. Optimal commit order
+
+Return analysis report - DO NOT save files"
+```
+
+Save analysis to: `./.claude/commitcraft/{session_name}/00-batch-analysis.md`
 
 ### Phase 1: Feature Group Detection
-Then use the **commit-grouper** sub agent to identify and separate feature groups, establishing the optimal commit order based on dependencies and logical boundaries.
+Use the **commit-grouper** sub agent to identify feature groups:
+
+```
+Use Task tool with commit-grouper agent: "
+Session Path: ./.claude/commitcraft/{session_name}/
+Previous Analysis: Available at 00-batch-analysis.md
+
+Task: Create batch commit plan with multiple feature groups
+Instructions:
+1. Read analysis to understand all changes
+2. Identify 2-5 natural feature boundaries
+3. Order groups by dependencies
+4. Return batch plan - DO NOT save files"
+```
+
+Save batch plan to: `./.claude/commitcraft/{session_name}/01-batch-plan.md`
 
 ### Phase 2: Sequential Commit Processing
-For each identified feature group, execute this sub-chain:
+For each identified feature group, execute this documented sub-chain:
 
-1. Use the **commit-message** sub agent to generate an appropriate commit message for the feature
-2. Use the **commit-validator** sub agent to validate quality (must achieve 90+ score)
-3. If validation passes, use the **commit-executor** sub agent to stage and commit the files
+```
+For group N in groups:
+    # 1. Generate message
+    Use Task tool with commit-message agent:
+    "Session: {session_name}, Group: {group_N}
+     Generate message for files: {files}
+     Return message - DO NOT save"
+
+    Save to: ./.claude/commitcraft/{session_name}/02-group-{N}-message.md
+
+    # 2. Validate
+    Use Task tool with commit-validator agent:
+    "Validate message: {message}
+     Return score - DO NOT save"
+
+    Save to: ./.claude/commitcraft/{session_name}/03-group-{N}-validation.md
+
+    # 3. Execute if valid
+    Use Task tool with commit-executor agent:
+    "Execute commit with message: {message}
+     Files: {files}
+     Return result - DO NOT save"
+
+    Save to: ./.claude/commitcraft/{session_name}/04-group-{N}-execution.md
+```
 
 Continue this process for all groups until all features are committed separately.
 
@@ -134,6 +204,8 @@ Select: _
 ## Output Requirements
 
 ### Batch Summary
+Generate and save comprehensive summary after completion:
+
 ```
 ✅ Batch Complete
 ━━━━━━━━━━━━━━━━
@@ -164,6 +236,24 @@ Batch commit succeeds when:
 - No unresolved conflicts exist
 - User confirms completion
 - Repository is in clean state
+
+## Process Documentation Structure
+
+When documentation is enabled (default), all outputs saved to `./.claude/commitcraft/{session_name}/`:
+```
+.claude/
+└── commitcraft/
+    └── batch-20240117-143025/           # Batch session
+        ├── 00-batch-analysis.md         # Initial analysis
+        ├── 01-batch-plan.md            # Grouping plan
+        ├── 02-group-1-message.md       # Group 1 message
+        ├── 03-group-1-validation.md    # Group 1 validation
+        ├── 04-group-1-execution.md     # Group 1 execution
+        ├── 02-group-2-message.md       # Group 2 message
+        ├── 03-group-2-validation.md    # Group 2 validation
+        ├── 04-group-2-execution.md     # Group 2 execution
+        └── summary.json                 # Batch summary
+```
 
 ## Integration Context
 
