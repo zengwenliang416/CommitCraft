@@ -217,10 +217,20 @@ After user approval, save to: `./.claude/commitcraft/{session_name}/01-grouping-
 - {file_path_1}
 - {file_path_2}
 
+**Manual add command:**
+```bash
+git add {file_path_1} {file_path_2}
+```
+
 ## Group 2: {group_name}
 **Files to include:**
 - {file_path_3}
 - {file_path_4}
+
+**Manual add command:**
+```bash
+git add {file_path_3} {file_path_4}
+```
 ```
 
 ## 🛑 Grouping Approval Gate
@@ -277,9 +287,25 @@ Save all messages to: `./.claude/commitcraft/{session_name}/02-commit-messages.m
 {full_commit_message_for_group_1}
 ```
 
+**Manual commit command:**
+```bash
+# First add files (refer to 01-grouping-strategy.md for file list)
+git add {files_for_group_1}
+# Then commit with the message
+git commit -m "{commit_message_subject_line}" -m "{commit_message_body}"
+```
+
 ## Commit 2: {group_name}
 ```
 {full_commit_message_for_group_2}
+```
+
+**Manual commit command:**
+```bash
+# First add files (refer to 01-grouping-strategy.md for file list)
+git add {files_for_group_2}
+# Then commit with the message
+git commit -m "{commit_message_subject_line}" -m "{commit_message_body}"
 ```
 ```
 
@@ -322,10 +348,42 @@ Quality Scores:
 Average: {avg_score}/100
 
 All commits meet quality standards.
-Execute commits now? (yes/no)
+
+How would you like to proceed?
+1. Auto-execute with commit-executor agent (recommended)
+2. Manual execution (I'll show you the commands)
+3. Cancel
+
+Select (1/2/3): _
 ```
-**CRITICAL**: MUST STOP here and wait for user approval.
-Only proceed to Phase 3 if user explicitly confirms.
+
+**CRITICAL**: MUST STOP here and wait for user response.
+
+**If user selects option 1**: Proceed to Phase 3 with commit-executor agent.
+
+**If user selects option 2**:
+```markdown
+📝 Manual Execution Instructions
+═════════════════════════════════
+
+To manually execute the commits, use the commands from:
+
+📁 File Grouping Commands:
+   Location: ./.claude/commitcraft/{session_name}/01-grouping-strategy.md
+   Contains: git add commands for each group
+
+📋 Commit Message Commands:
+   Location: ./.claude/commitcraft/{session_name}/02-commit-messages.md
+   Contains: git commit commands for each group
+
+Execute the commands in order for each group:
+1. First run the git add command from 01-grouping-strategy.md
+2. Then run the git commit command from 02-commit-messages.md
+
+Repeat for each group/commit.
+```
+
+**If user selects option 3**: Cancel the operation.
 
 ## Phase 3: Execution Process (After Approval Only)
 

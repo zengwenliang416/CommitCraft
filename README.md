@@ -57,7 +57,7 @@ graph LR
 # → Groups by features
 # → Generates messages
 # → Validates quality (90+ score)
-# → Executes commits
+# → Choice: Auto-execute or Manual commands
 # → Creates process documentation (.claude/commitcraft/session-*)
 ```
 
@@ -84,8 +84,8 @@ graph LR
 .claude/commitcraft/
 └── commitcraft-20240117-143025/
     ├── 00-repository-analysis.md   # Repository scan
-    ├── 01-grouping-strategy.md     # Grouping decisions
-    ├── 02-commit-messages.md       # Generated messages
+    ├── 01-grouping-strategy.md     # Grouping decisions + git add commands
+    ├── 02-commit-messages.md       # Generated messages + git commit commands
     ├── 03-validation-report.md     # Quality validation
     ├── 04-execution-log.md         # Execution details
     └── summary.json                # Session summary
@@ -204,7 +204,7 @@ See details in commands/ for each command.
                           ↓
 ┌─────────────────────────────────────────────────────┐
 │                PHASE 3: EXECUTION                    │
-│          Safe commit with verification               │
+│     Choose: Auto-execute OR Manual commands          │
 │               [Final Gate 🚪]                        │
 └─────────────────────────┬───────────────────────────┘
                           ↓
