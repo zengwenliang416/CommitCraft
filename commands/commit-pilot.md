@@ -98,7 +98,7 @@ QUALITY STANDARDS:
   • Convention adherence checked
 
 MORE INFO:
-  Repository: https://github.com/your-username/commitcraft
+  Repository: https://github.com/zengwenliang416/CommitCraft
   Docs: See README.md for detailed documentation
 ```
 

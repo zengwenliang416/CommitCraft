@@ -95,13 +95,14 @@ function detectLanguagePreference(prompt) {
 // Check if this is a help command
 function isHelpCommand(prompt) {
   // Match any CommitCraft command with --help, -h, or help flag
+  // Using flexible patterns to catch all variations
   const helpPatterns = [
-    /^\s*\/commit-pilot\s+(--help|-h|help)\s*$/i,
-    /^\s*\/analyze\s+(--help|-h|help)\s*$/i,
-    /^\s*\/group\s+(--help|-h|help)\s*$/i,
-    /^\s*\/validate\s+(--help|-h|help)\s*$/i,
-    /^\s*\/batch-commit\s+(--help|-h|help)\s*$/i,
-    /^\s*\/commit-history\s+(--help|-h|help)\s*$/i
+    /\/commit-pilot.*\s+(--help|-h|help)/i,
+    /\/analyze.*\s+(--help|-h|help)/i,
+    /\/group.*\s+(--help|-h|help)/i,
+    /\/validate.*\s+(--help|-h|help)/i,
+    /\/batch-commit.*\s+(--help|-h|help)/i,
+    /\/commit-history.*\s+(--help|-h|help)/i
   ];
 
   return helpPatterns.some(pattern => pattern.test(prompt));
@@ -109,7 +110,8 @@ function isHelpCommand(prompt) {
 
 // Extract command name from help request
 function extractCommandFromHelp(prompt) {
-  const match = prompt.match(/^\s*\/(\S+)\s+(--help|-h|help)\s*$/i);
+  // Updated to match flexible pattern
+  const match = prompt.match(/\/(\S+?)(?:\s+.*?)?\s+(--help|-h|help)/i);
   return match ? match[1].toLowerCase() : null;
 }
 
@@ -368,7 +370,8 @@ EXAMPLES:
 function enhancePrompt(originalPrompt) {
   // Check if this is a help command first
   if (isHelpCommand(originalPrompt)) {
-    return generateCommitPilotHelp();
+    const commandName = extractCommandFromHelp(originalPrompt);
+    return generateHelpText(commandName);
   }
 
   if (!detectCommitIntent(originalPrompt)) {
