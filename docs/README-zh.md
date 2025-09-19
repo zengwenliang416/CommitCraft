@@ -9,7 +9,7 @@
 
 **将你的 Git 工作流从手动提交转变为智能编排，质量保证达 95%**
 
-[🇬🇧 English](../README.md) | [🇨🇳 中文文档](README-zh.md) | [📖 用户指南](../PILOT-USER-GUIDE-zh.md)
+[🇬🇧 English](../README.md) | [🧰 命令参考](../commands/) | [🧠 智能体文档](../agents/) | [🗒 版本记录](../CHANGELOG-v3.md)
 
 </div>
 
@@ -95,25 +95,46 @@ graph LR
 ## ⚡ 快速开始
 
 ### 📦 安装（30 秒）
-
-<details>
-<summary><b>🪟 Windows</b></summary>
-
-```powershell
-# 选项 1：批处理安装器
-./install.bat
-
-# 选项 2：PowerShell
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
-</details>
+前置条件：
+- Git 2.30+（必需）
+- Node.js 16+（推荐用于 Hooks；核心功能不依赖）
+- macOS/Linux 终端，或 Windows 通过 WSL/Git Bash
 
 <details>
 <summary><b>🍎 macOS / 🐧 Linux</b></summary>
 
 ```bash
-# 设置可执行权限并运行
-chmod +x install.sh && ./install.sh
+# 标准安装
+make install
+
+# 开发模式（使用符号链接便于开发）
+make dev
+
+# 卸载
+make uninstall
+
+# 查看所有可用命令
+make help
+```
+</details>
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```bash
+# 选项 1：使用 WSL（Windows Subsystem for Linux）- 推荐
+wsl --install  # 如果未安装 WSL
+make install
+
+# 选项 2：使用 Git Bash
+make install
+
+# 选项 3：手动安装（进阶）
+# 将文件复制到 Claude Code 目录：
+#  - Agents  →  ~/.claude/agents/
+#  - Commands → ~/.claude/commands/
+#  - Hooks    → ~/.claude/hooks/
+# 然后创建 ~/.claude/hooks.json（或直接运行 make install）
 ```
 </details>
 
@@ -140,17 +161,27 @@ code src/feature.js
 继续编排？(Y/n)
 ```
 
+### 🧰 常用命令速查
+- `/commit-pilot` — 全流程编排。常用参数：`--quick`、`--preview`、`--batch`、`--skip-docs`、`--skip-validation`、`--language <en|ch>`
+- `/validate "type(scope): subject"` — 对提交消息打分与校验。参数：`--strict`、`--fix`
+- `/analyze` — 扫描仓库变更。参数：`--deep`、`--summary`、`--format <text|json|markdown>`
+- `/group` — 按策略分组为逻辑提交。参数：`--strategy <feature|module|type>`、`--max-files <n>`、`--interactive`
+- `/batch-commit` — 批量处理多个提交。参数：`--auto`、`--preview`、`--parallel <n>`
+- `/commit-history` — 分析历史提交。参数：`--last <n>`、`--author <name>`、`--score`、`--export markdown`
+
+更多细节见 commands/ 目录中的对应文档。
+
 ## 🏗️ 架构深度解析
 
-### 🤖 五大专家智能体（支持上下文链式传递）
+### 🤖 五大专家智能体
 
-| 智能体 | 角色 | 专长 | 上下文能力 |
-|-------|------|------|-----------|
-| 🔍 **commit-analyzer** | 仓库扫描器 | 变更检测、依赖映射、风险评估 | 生成初始分析文档 |
-| 📁 **commit-grouper** | 组织专家 | 功能分离、逻辑分组、耦合检测 | 读取分析文档，生成分组策略 |
-| ✍️ **commit-message** | 消息工匠 | 专业消息、双语支持、约定合规 | 读取分组策略，生成上下文消息 |
-| ✅ **commit-validator** | 质量守护者 | 90+ 评分、安全检查、格式验证 | 读取所有文档，交叉验证 |
-| 🚀 **commit-executor** | 安全操作员 | 原子提交、回滚能力、验证 | 读取验证报告，执行提交 |
+| 智能体 | 角色 | 专长 |
+|-------|------|------|
+| 🔍 **commit-analyzer** | 仓库扫描器 | 变更检测、依赖映射、风险评估 |
+| 📁 **commit-grouper** | 组织专家 | 功能分离、逻辑分组、耦合检测 |
+| ✍️ **commit-message** | 消息工匠 | 专业消息、双语支持、约定合规 |
+| ✅ **commit-validator** | 质量守护者 | 90+ 评分、安全检查、格式验证 |
+| 🚀 **commit-executor** | 安全操作员 | 原子提交、回滚能力、验证 |
 
 ### 🔄 工作流管道
 
@@ -322,13 +353,24 @@ ci:       💚 CI/CD
 </details>
 
 <details>
-<summary><b>无文档模式</b></summary>
+<summary><b>跳过文档模式</b></summary>
 
 ```bash
 /commit-pilot --skip-docs
 # → 跳过文档生成
 # → 更快执行
 # → 适合简单提交
+```
+</details>
+
+<details>
+<summary><b>跳过验证模式</b></summary>
+
+```bash
+/commit-pilot --skip-validation
+# → 跳过质量验证
+# → 直接执行提交
+# → 不推荐使用
 ```
 </details>
 
@@ -363,11 +405,26 @@ find .claude/commitcraft -type d -name "commitcraft-*" | sort | head -n -10 | xa
 - ✅ **GPG 签名** - 支持签名提交
 
 ## 📖 文档
+仓库内快速参考：
+- 📝 命令参考：../commands/
+- 🔧 智能体说明：../agents/
+- 🗒 版本记录：../CHANGELOG-v3.md
+- 🇬🇧 English：../README.md
 
-- 📘 [完整用户指南](../PILOT-USER-GUIDE-zh.md)
-- 🔧 [智能体文档](../agents/)
-- 📝 [命令参考](../commands/)
-- 🇬🇧 [English Documentation](../README.md)
+常用 Make 目标：
+- `make install` — 安装命令/智能体/钩子到 `~/.claude`
+- `make dev` — 开发模式下创建符号链接
+- `make status` — 查看安装及版本状态
+- `make uninstall` — 卸载所有组件
+
+常见问题排查：
+- 未安装 Node.js：Hooks 可选；建议从 nodejs.org 安装
+- 命令不可见：执行 `make install` 后重启 Claude Code
+- 权限报错：确保 `~/.claude` 可写且 hooks 具有可执行权限
+
+已知限制：
+- 不执行 git push；聚焦本地提交与安全
+- 质量阈值基于约定式提交；可通过参数放宽
 
 ## 🤝 贡献
 
@@ -394,11 +451,18 @@ MIT 许可证 - 查看 [LICENSE](../LICENSE)
 
 ## 📮 支持
 
-- 🐛 **问题反馈**：[GitHub Issues](https://github.com/your-username/commitcraft/issues)
-- 💬 **讨论**：[GitHub Discussions](https://github.com/your-username/commitcraft/discussions)
+- 🐛 **问题反馈**：[GitHub Issues](https://github.com/zengwenliang416/CommitCraft/issues)
+- 💬 **讨论**：[GitHub Discussions](https://github.com/zengwenliang416/CommitCraft/discussions)
 - 📧 **邮箱**：support@commitcraft.dev
 
 ---
+
+## ❓ 常见问答（FAQ）
+- 是否需要联网？不需要。所有逻辑在本地执行，Hooks 在本机运行。
+- 会改写提交历史吗？不会。仅执行标准 `git commit`；可先预览/演练。
+- 过程文档存放在哪里？项目目录下 `.claude/commitcraft/commitcraft-<timestamp>/`。
+- 可否跳过文档？可以：`/commit-pilot --skip-docs`，详见 commands/commit-pilot.md。
+- 如何快速校验消息？运行 `/validate "type(scope): subject"`。
 
 <div align="center">
 

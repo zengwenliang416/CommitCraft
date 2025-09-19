@@ -208,6 +208,21 @@ After receiving grouper's proposal:
 ### 3. Save Grouping Strategy
 After user approval, save to: `./.claude/commitcraft/{session_name}/01-grouping-strategy.md`
 
+**Required Format for 01-grouping-strategy.md:**
+```markdown
+# File Grouping Strategy
+
+## Group 1: {group_name}
+**Files to include:**
+- {file_path_1}
+- {file_path_2}
+
+## Group 2: {group_name}
+**Files to include:**
+- {file_path_3}
+- {file_path_4}
+```
+
 ## 🛑 Grouping Approval Gate
 
 After grouping strategy is finalized:
@@ -252,6 +267,21 @@ Instructions:
 ```
 
 Save all messages to: `./.claude/commitcraft/{session_name}/02-commit-messages.md`
+
+**Required Format for 02-commit-messages.md:**
+```markdown
+# Generated Commit Messages
+
+## Commit 1: {group_name}
+```
+{full_commit_message_for_group_1}
+```
+
+## Commit 2: {group_name}
+```
+{full_commit_message_for_group_2}
+```
+```
 
 ### 2. Validate Each Message
 ```
@@ -301,28 +331,53 @@ Only proceed to Phase 3 if user explicitly confirms.
 
 **ONLY execute after receiving explicit user approval**
 
-### Execute Each Commit
+### CRITICAL: Read Saved Documents First
+Before executing ANY commits, orchestrator MUST:
+1. Read `./.claude/commitcraft/{session_name}/01-grouping-strategy.md` to get the list of groups
+2. Read `./.claude/commitcraft/{session_name}/02-commit-messages.md` to get messages for each group
+3. Execute commits for EACH group found in the documents
+
+### Execute Each Commit Group
 ```
-For each approved group, use Task tool with commit-executor agent:
-"Session Path: ./.claude/commitcraft/{session_name}/
-Previous Documents Available:
-- 01-grouping-strategy.md (file lists)
-- 02-commit-messages.md (approved messages)
-- 03-validation-report.md (quality confirmation)
+# First, orchestrator reads the saved grouping strategy and messages
+groups = read_from_file("01-grouping-strategy.md")
+messages = read_from_file("02-commit-messages.md")
 
-Execute commit for group: {group_name}
-Message: {approved_message}
-Files: {group_files}
+# Then, for EACH group in the saved documents:
+For each group in groups:
+  Use Task tool with commit-executor agent:
+  "Session Path: ./.claude/commitcraft/{session_name}/
 
-Instructions:
-1. Optionally read validation report to confirm this commit is approved
-2. Stage specified files exactly as listed
-3. Create commit with the provided message
-4. Capture commit hash
-5. Return execution result - DO NOT save files"
+  Task: Execute commit for Group #{group_number}
+
+  Instructions:
+  1. Read ./.claude/commitcraft/{session_name}/01-grouping-strategy.md
+  2. Find Group #{group_number} and extract its file list
+  3. Read ./.claude/commitcraft/{session_name}/02-commit-messages.md
+  4. Find Commit #{group_number} message
+  5. Stage ONLY the files listed for this specific group
+  6. Create commit with the exact message from the document
+  7. Capture commit hash
+  8. Return execution result with hash - DO NOT save files"
 ```
 
-Save execution log to: `./.claude/commitcraft/{session_name}/04-execution-log.md`
+### Execution Log Structure
+Save ALL execution results to: `./.claude/commitcraft/{session_name}/04-execution-log.md`
+```markdown
+# Commit Execution Log
+
+## Group 1: {group_name}
+- Commit Hash: {hash_1}
+- Files: {files_from_grouping_doc}
+- Message: {message_from_messages_doc}
+- Status: SUCCESS
+
+## Group 2: {group_name}
+- Commit Hash: {hash_2}
+- Files: {files_from_grouping_doc}
+- Message: {message_from_messages_doc}
+- Status: SUCCESS
+```
 
 ### Generate Session Summary
 After all commits complete, create summary:

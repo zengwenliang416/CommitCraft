@@ -9,7 +9,7 @@
 
 **Transform your Git workflow from manual commits to intelligent orchestration with 95% quality assurance**
 
-[🇨🇳 中文文档](docs/README-zh.md) | [🇬🇧 English](README.md) | [📖 User Guide](PILOT-USER-GUIDE.md)
+[🇨🇳 中文文档](docs/README-zh.md) | [🧰 Commands](commands/) | [🧠 Agents](agents/) | [🗒 Changelog](CHANGELOG-v3.md)
 
 </div>
 
@@ -94,25 +94,46 @@ graph LR
 ## ⚡ Quick Start
 
 ### 📦 Installation (30 seconds)
-
-<details>
-<summary><b>🪟 Windows</b></summary>
-
-```powershell
-# Option 1: Batch installer
-./install.bat
-
-# Option 2: PowerShell
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
-</details>
+Prerequisites:
+- Git 2.30+ (required)
+- Node.js 16+ (recommended for hooks; core features work without it)
+- macOS/Linux terminal, or Windows via WSL/Git Bash
 
 <details>
 <summary><b>🍎 macOS / 🐧 Linux</b></summary>
 
 ```bash
-# Make executable and run
-chmod +x install.sh && ./install.sh
+# Standard installation
+make install
+
+# Development mode (uses symlinks for active development)
+make dev
+
+# Uninstall
+make uninstall
+
+# View all available commands
+make help
+```
+</details>
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```bash
+# Option 1: Use WSL (Windows Subsystem for Linux) - Recommended
+wsl --install  # If WSL not installed
+make install
+
+# Option 2: Use Git Bash
+make install
+
+# Option 3: Manual installation (advanced)
+# Copy files to your Claude Code dirs:
+#  - Agents  →  ~/.claude/agents/
+#  - Commands → ~/.claude/commands/
+#  - Hooks    → ~/.claude/hooks/
+# Then create ~/.claude/hooks.json (or run: make install)
 ```
 </details>
 
@@ -138,6 +159,16 @@ Quality forecast: 94/100
 
 Continue with orchestration? (Y/n)
 ```
+
+### 🧰 Quick Commands
+- `/commit-pilot` — Full orchestration. Flags: `--quick`, `--preview`, `--batch`, `--skip-docs`, `--skip-validation`, `--language <en|ch>`
+- `/validate "type(scope): subject"` — Score and lint a commit message. Flags: `--strict`, `--fix`
+- `/analyze` — Scan repo changes. Flags: `--deep`, `--summary`, `--format <text|json|markdown>`
+- `/group` — Group files into logical commits. Flags: `--strategy <feature|module|type>`, `--max-files <n>`, `--interactive`
+- `/batch-commit` — Process multiple commits. Flags: `--auto`, `--preview`, `--parallel <n>`
+- `/commit-history` — Analyze past commits. Flags: `--last <n>`, `--author <name>`, `--score`, `--export markdown`
+
+See details in commands/ for each command.
 
 ## 🏗️ Architecture Deep Dive
 
@@ -336,11 +367,26 @@ ci:       💚 CI/CD
 - ✅ **GPG Signing** - Signed commit support
 
 ## 📖 Documentation
+Quick references inside this repo:
+- 📝 Command reference: commands/
+- 🔧 Agent specs: agents/
+- 🗒 Release notes: CHANGELOG-v3.md
+- 🇨🇳 中文文档: docs/README-zh.md
 
-- 📘 [Complete User Guide](PILOT-USER-GUIDE.md)
-- 🔧 [Agent Documentation](agents/)
-- 📝 [Command Reference](commands/)
-- 🇨🇳 [中文文档](docs/README-zh.md)
+Make targets you’ll use most:
+- `make install` — Install commands/agents/hooks to `~/.claude`
+- `make dev` — Symlink files for live development
+- `make status` — Check install health and versions
+- `make uninstall` — Remove installed components
+
+Troubleshooting basics:
+- Missing Node.js: Hooks still optional; install from nodejs.org
+- Commands not visible: Restart Claude Code after `make install`
+- Permission issues: Ensure `~/.claude` is writable and hooks are +x
+
+Known limitations:
+- No git push; CommitCraft focuses on local commits and safety
+- Quality gates expect conventional commit style; can be relaxed with flags
 
 ## 🤝 Contributing
 
@@ -367,11 +413,18 @@ Special thanks to:
 
 ## 📮 Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/your-username/commitcraft/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/commitcraft/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/zengwenliang416/CommitCraft/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/zengwenliang416/CommitCraft/discussions)
 - 📧 **Email**: support@commitcraft.dev
 
 ---
+
+## ❓ FAQ
+- Does CommitCraft require internet access? No. It operates locally; hooks run on your machine.
+- Will it rewrite my commit history? No. It performs standard `git commit` operations and can preview/dry-run first.
+- Where are session docs stored? Under `.claude/commitcraft/commitcraft-<timestamp>/` in your project.
+- Can I skip documentation? Yes: `/commit-pilot --skip-docs` or see commands/commit-pilot.md.
+- How do I validate a message quickly? Run `/validate "type(scope): subject"`.
 
 <div align="center">
 
