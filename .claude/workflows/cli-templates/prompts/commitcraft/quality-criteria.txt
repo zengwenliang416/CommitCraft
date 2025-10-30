@@ -1,0 +1,353 @@
+# Commit Message Quality Criteria
+
+## Scoring Dimensions (100 Points Total)
+
+### 1. Format Compliance (25 Points)
+
+**Checks**:
+- [ ] Follows Conventional Commits format (type(scope): subject)
+- [ ] Valid commit type (feat/fix/docs/style/refactor/test/chore/perf/ci/build)
+- [ ] Scope is present and meaningful
+- [ ] Subject line ≤72 characters
+- [ ] Subject uses imperative mood (not past tense)
+- [ ] Subject starts with lowercase (after scope)
+- [ ] No period at end of subject
+
+**Scoring Rubric**:
+- 25 points: Perfect format compliance
+- 20 points: Minor format issues (missing scope or slightly over length)
+- 15 points: Invalid type or significant format deviation
+- 10 points: Multiple format violations
+- 0 points: Does not follow Conventional Commits at all
+
+**Common Issues**:
+- ❌ Missing type: "update authentication code"
+- ❌ Invalid type: "update(auth): add feature"
+- ❌ Missing scope: "feat: add authentication"
+- ❌ Capitalized subject: "feat(auth): Add authentication"
+- ❌ Past tense: "feat(auth): added authentication"
+- ❌ Period at end: "feat(auth): add authentication."
+- ❌ Too long: "feat(auth): implement comprehensive JWT-based user authentication with refresh tokens and role-based access control"
+
+### 2. Clarity (25 Points)
+
+**Checks**:
+- [ ] Subject is clear and specific
+- [ ] Avoids vague terms (update, change, modify, improve)
+- [ ] Uses imperative mood consistently
+- [ ] Body provides meaningful context (if present)
+- [ ] Body explains "why" not just "what"
+
+**Scoring Rubric**:
+- 25 points: Clear, specific, unambiguous message
+- 20 points: Generally clear with minor vagueness
+- 15 points: Vague terms used but meaning can be inferred
+- 10 points: Unclear or ambiguous intent
+- 0 points: Completely vague or confusing
+
+**Good Examples**:
+- ✅ "implement JWT-based user authentication"
+- ✅ "fix email validation regex pattern error"
+- ✅ "refactor database connection pool configuration"
+
+**Vague Examples**:
+- ❌ "update auth" (what was updated?)
+- ❌ "fix bug" (which bug?)
+- ❌ "improve performance" (how? where?)
+- ❌ "change code" (too generic)
+
+**Clarity Enhancement**:
+- Be specific: "add login rate limiting" > "improve login"
+- Name components: "fix UserList pagination error" > "fix pagination"
+- Explain scope: "optimize database query for user search" > "optimize query"
+
+### 3. Completeness (25 Points)
+
+**Checks**:
+- [ ] All significant changes explained
+- [ ] Multi-file commits include body
+- [ ] Body uses bullet points for multiple changes
+- [ ] Breaking changes documented in footer
+- [ ] Issue references included if applicable
+- [ ] Technical details provided for complex changes
+
+**Scoring Rubric**:
+- 25 points: All changes comprehensively documented
+- 20 points: Most changes explained, minor gaps
+- 15 points: Key changes missing from description
+- 10 points: Minimal documentation, significant omissions
+- 0 points: No body or explanation for complex changes
+
+**Completeness Guidelines**:
+
+**Single-file changes**: Subject line may be sufficient
+```
+fix(api): resolve null pointer exception in getUserById
+```
+
+**Multi-file changes (2-5 files)**: Body recommended
+```
+feat(auth): implement JWT authentication
+
+Changes:
+- Add JWT token generation on login
+- Implement token validation middleware
+- Create refresh token endpoint
+```
+
+**Complex changes (>5 files)**: Detailed body required
+```
+refactor(api): restructure authentication module
+
+Changes:
+- Split AuthService into separate concerns
+- Extract token management to TokenService
+- Move validation logic to middleware
+- Update all API endpoints to use new structure
+
+Implementation:
+- Maintains backward compatibility
+- Uses dependency injection for flexibility
+- Improves testability
+```
+
+**Breaking Changes**: BREAKING CHANGE in footer
+```
+refactor(api): change authentication endpoint format
+
+BREAKING CHANGE: /auth/login now expects { email, password } instead of { username, password }
+
+Migration:
+- Update client code to use email
+- Run migration script to update existing users
+```
+
+### 4. Convention Adherence (25 Points)
+
+**Checks**:
+- [ ] Co-Author attribution present (Co-Authored-By: Claude)
+- [ ] Claude Code attribution present (🤖 Generated with)
+- [ ] Body lines wrap at 72-100 characters
+- [ ] Footer format correct (keyword: value)
+- [ ] Issue references use correct format (Closes #123, Fixes #456)
+- [ ] Breaking changes use BREAKING CHANGE: prefix
+
+**Scoring Rubric**:
+- 25 points: All conventions followed perfectly
+- 20 points: Minor convention deviations (line wrapping)
+- 15 points: Missing attribution or incorrect footer format
+- 10 points: Multiple convention violations
+- 0 points: No convention adherence
+
+**Required Attributions**:
+```
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Footer Format Examples**:
+```
+Closes #123
+Fixes #456, #789
+Refs #100
+
+BREAKING CHANGE: API endpoint signature changed
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+## Quality Score Interpretation
+
+### 90-100 Points: Excellent ✅
+- Ready for commit
+- Meets all quality standards
+- Professional and clear
+- Complete documentation
+
+### 80-89 Points: Good ⚠️
+- Minor improvements needed
+- Consider addressing feedback
+- Generally acceptable
+- Small refinements recommended
+
+### 70-79 Points: Fair ⚠️
+- Needs improvement
+- Address specific issues before committing
+- Rework message for clarity
+- Add missing information
+
+### Below 70 Points: Poor ❌
+- Requires significant rework
+- Does not meet minimum standards
+- Regenerate message
+- Review commit changes for clarity
+
+## Common Improvement Patterns
+
+### Pattern 1: Vague to Specific
+
+**Before (Score: 65/100)**:
+```
+feat(api): update endpoint
+```
+
+**After (Score: 95/100)**:
+```
+feat(api): add pagination support to user list endpoint
+
+Changes:
+- Add limit and offset query parameters
+- Return total count in response headers
+- Implement cursor-based pagination
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Pattern 2: Missing Body to Complete
+
+**Before (Score: 70/100)**:
+```
+feat(auth): implement authentication
+```
+
+**After (Score: 95/100)**:
+```
+feat(auth): implement JWT-based user authentication
+
+Changes:
+- Add login endpoint with JWT token generation
+- Implement token validation middleware
+- Create refresh token mechanism
+- Add password hashing with bcrypt
+
+Implementation:
+- Using jsonwebtoken library (v9.0.0)
+- Tokens expire after 1 hour
+- Refresh tokens valid for 7 days
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Pattern 3: Past Tense to Imperative
+
+**Before (Score: 75/100)**:
+```
+fix(api): Fixed login bug
+```
+
+**After (Score: 95/100)**:
+```
+fix(api): resolve null pointer exception in login validation
+
+Changes:
+- Add null check for email field
+- Return proper error message
+- Update validation tests
+
+Fixes #456
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+## Automated Validation Checks
+
+### Format Validation
+```javascript
+function validateFormat(message) {
+  const header = message.split('\n')[0]
+  const conventionalRegex = /^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+$/
+
+  if (!conventionalRegex.test(header)) {
+    return { valid: false, issue: 'Does not follow Conventional Commits format' }
+  }
+
+  const subject = header.replace(/^[^:]+:\s*/, '')
+  if (subject.length > 72) {
+    return { valid: false, issue: `Subject too long (${subject.length} > 72)` }
+  }
+
+  if (subject[0] === subject[0].toUpperCase()) {
+    return { valid: false, issue: 'Subject should start with lowercase' }
+  }
+
+  if (subject.endsWith('.')) {
+    return { valid: false, issue: 'Subject should not end with period' }
+  }
+
+  return { valid: true }
+}
+```
+
+### Clarity Validation
+```javascript
+function validateClarity(message) {
+  const subject = message.split('\n')[0].replace(/^[^:]+:\s*/, '')
+
+  // Check for vague terms
+  const vagueTerms = ['update', 'fix', 'change', 'modify', 'improve']
+  const hasVagueTerm = vagueTerms.some(term =>
+    subject.toLowerCase().includes(term) && subject.split(' ').length < 5
+  )
+
+  if (hasVagueTerm) {
+    return { clear: false, issue: 'Subject too vague - be more specific' }
+  }
+
+  // Check imperative mood
+  const imperativePhrases = ['add', 'implement', 'fix', 'remove', 'update', 'refactor', 'create']
+  const startsWithImperative = imperativePhrases.some(phrase =>
+    subject.toLowerCase().startsWith(phrase)
+  )
+
+  if (!startsWithImperative) {
+    return { clear: false, issue: 'Use imperative mood (e.g., "add" not "added")' }
+  }
+
+  return { clear: true }
+}
+```
+
+## Quality Improvement Recommendations
+
+### For Format Issues
+1. Review Conventional Commits specification
+2. Use type templates (feat/fix/docs/etc.)
+3. Keep scope descriptive but concise
+4. Practice imperative mood
+5. Check subject length before committing
+
+### For Clarity Issues
+1. Be specific about what changed
+2. Name components or modules
+3. Avoid generic verbs (update, change, improve)
+4. Use precise technical terminology
+5. Explain the user-facing impact
+
+### For Completeness Issues
+1. Add body for multi-file commits
+2. Use bullet points to list changes
+3. Explain implementation details
+4. Document breaking changes
+5. Reference related issues
+
+### For Convention Issues
+1. Always include co-author attribution
+2. Format footer keywords correctly
+3. Wrap body lines at 72-100 chars
+4. Use proper BREAKING CHANGE format
+5. Reference issues with correct syntax
+
+## References
+
+- Conventional Commits: https://www.conventionalcommits.org/
+- Angular Commit Guidelines: https://github.com/angular/angular/blob/main/CONTRIBUTING.md
+- Git Commit Best Practices: https://cbea.ms/git-commit/

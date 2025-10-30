@@ -1,0 +1,258 @@
+# Conventional Commits Format Specification
+
+## Format Structure
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+## Type Keywords
+
+### Primary Types
+- **feat**: New feature for the user (not a build script feature)
+- **fix**: Bug fix for the user (not a fix to a build script)
+- **docs**: Documentation only changes
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- **refactor**: Code change that neither fixes a bug nor adds a feature
+- **perf**: Code change that improves performance
+- **test**: Adding missing tests or correcting existing tests
+- **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+- **ci**: Changes to CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+- **chore**: Other changes that don't modify src or test files
+- **revert**: Reverts a previous commit
+
+## Scope
+
+- **Required**: Yes (recommended for clarity)
+- **Format**: Lowercase with hyphens
+- **Length**: Maximum 20 characters
+- **Examples**: auth, api, ui-components, user-profile, data-layer
+
+### Scope Guidelines
+- Use module name (e.g., auth, api, database)
+- Use feature name (e.g., login, registration, checkout)
+- Use component name (e.g., button, modal, form)
+- Keep short and descriptive
+
+## Subject
+
+- **Required**: Yes
+- **Format**: Imperative mood, lowercase, no period at end
+- **Length**: Maximum 72 characters
+- **Examples**:
+  - ✅ "implement JWT-based authentication"
+  - ✅ "fix login validation error"
+  - ✅ "update README with setup instructions"
+  - ❌ "implemented JWT authentication" (past tense)
+  - ❌ "Implement JWT authentication" (capitalized)
+  - ❌ "implement JWT authentication." (period at end)
+
+### Subject Guidelines
+- Start with lowercase (after scope)
+- Use imperative mood ("add" not "added" or "adds")
+- Be specific and descriptive
+- No period at the end
+- Explain "what" not "how"
+
+## Body
+
+- **Required**: No (but recommended for non-trivial changes)
+- **Format**: Wrap at 72-100 characters per line
+- **Content**: Bullet points explaining changes
+
+### Body Guidelines
+- Explain "why" not "what" (subject explains "what")
+- Use bullet points for multiple changes
+- Include implementation details for complex changes
+- Separate from subject with blank line
+- Reference related changes or context
+
+### Body Examples
+
+```
+Changes:
+- Add JWT token generation and validation
+- Implement refresh token mechanism
+- Create authentication middleware
+
+Implementation:
+- Using jsonwebtoken library for JWT handling
+- Bcrypt for password hashing
+- Redis for token blacklisting
+```
+
+## Footer
+
+- **Required**: No (but always include co-author attribution)
+- **Format**: Special keywords or metadata
+- **Content**: Breaking changes, issue references, co-authors
+
+### Footer Keywords
+- **BREAKING CHANGE**: Indicates breaking API change
+- **Closes**: References issue numbers that this commit closes
+- **Fixes**: References issue numbers that this commit fixes
+- **Refs**: References related issues
+- **Co-Authored-By**: Attribution for pair programming
+
+### Footer Examples
+
+```
+BREAKING CHANGE: API endpoint /auth/login now requires email instead of username
+
+Closes #123
+Fixes #456
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+## Complete Examples
+
+### Example 1: New Feature
+
+```
+feat(auth): implement JWT-based user authentication
+
+Changes:
+- Add JWT token generation on login
+- Implement token validation middleware
+- Create refresh token endpoint
+
+Implementation:
+- Using jsonwebtoken for token handling
+- Redis for token blacklisting
+- Bcrypt for password hashing
+
+Closes #123
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Example 2: Bug Fix
+
+```
+fix(api): resolve login validation error
+
+Changes:
+- Fix email validation regex pattern
+- Add proper error messages for invalid inputs
+- Update validation tests
+
+Fixes #456
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Example 3: Documentation
+
+```
+docs: update README with authentication setup guide
+
+Changes:
+- Add authentication configuration section
+- Include JWT setup instructions
+- Document API endpoints
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Example 4: Breaking Change
+
+```
+refactor(api): restructure authentication endpoint contracts
+
+BREAKING CHANGE: /auth/login endpoint now expects { email, password } instead of { username, password }
+
+Changes:
+- Update login endpoint to use email
+- Modify user model structure
+- Update API documentation
+
+Migration Guide:
+- Replace username with email in login requests
+- Update client-side validation
+
+Closes #789
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+## Common Mistakes to Avoid
+
+### ❌ Wrong
+```
+Update authentication code.
+```
+**Issues**: No type, no scope, vague, period at end
+
+### ✅ Correct
+```
+feat(auth): implement two-factor authentication
+```
+
+### ❌ Wrong
+```
+feat: Added new login feature
+```
+**Issues**: Capitalized, past tense, no scope
+
+### ✅ Correct
+```
+feat(login): add two-factor authentication support
+```
+
+### ❌ Wrong
+```
+fix(auth): fixed bug
+```
+**Issues**: Not descriptive enough, past tense
+
+### ✅ Correct
+```
+fix(auth): resolve token expiration validation error
+```
+
+## Quality Checklist
+
+Before finalizing commit message:
+- [ ] Type keyword is valid (feat/fix/docs/etc.)
+- [ ] Scope is present and descriptive
+- [ ] Subject uses imperative mood
+- [ ] Subject is lowercase (after scope)
+- [ ] Subject is ≤72 characters
+- [ ] Subject has no period at end
+- [ ] Body explains "why" if needed
+- [ ] Body lines wrap at 72-100 chars
+- [ ] Footer includes co-author attribution
+- [ ] Footer includes issue references if applicable
+- [ ] Breaking changes are documented if any
+
+## Bilingual Support
+
+### English Examples
+- `feat(auth): implement user registration`
+- `fix(api): resolve database connection error`
+- `docs: update API documentation`
+
+### Chinese Examples
+- `feat(auth): 实现用户注册功能`
+- `fix(api): 修复数据库连接错误`
+- `docs: 更新API文档`
+
+## References
+
+- Conventional Commits Specification: https://www.conventionalcommits.org/
+- Angular Commit Message Guidelines: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit

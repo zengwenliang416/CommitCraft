@@ -1,0 +1,26 @@
+# Files and directories excluded from installation
+# These are development-only files that should not be installed to user systems
+
+# Development documentation
+docs/
+
+# Testing files
+COMMITCRAFT-TESTING.md
+
+# Development scripts
+cleanup-*.sh
+
+# Git files
+.git/
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
