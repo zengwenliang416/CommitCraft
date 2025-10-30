@@ -1,0 +1,496 @@
+# Security Pattern Detection for Commit Validation
+
+## Security Validation Philosophy
+
+**Goal**: Prevent accidental exposure of sensitive data in git commits through automated pattern detection.
+
+**Approach**:
+- Scan git diff for security-sensitive patterns
+- Block commits with CRITICAL security issues
+- Warn about HIGH severity patterns
+- Provide remediation guidance
+
+## Severity Levels
+
+### CRITICAL (Commit Blocked)
+- API keys and secrets
+- Passwords and credentials
+- Private keys and certificates
+- Cloud provider credentials
+- Database connection strings with credentials
+
+### HIGH (Warning, Allow with Confirmation)
+- Bearer tokens
+- Session tokens
+- OAuth tokens
+- JWT tokens in code (not examples)
+
+### MEDIUM (Warning Only)
+- Email addresses in code
+- Phone numbers
+- IP addresses
+- Domain names
+
+### LOW (Info Only)
+- Generic TODO/FIXME comments mentioning security
+- Placeholder credentials (obvious test data)
+
+## Security Pattern Catalog
+
+### 1. API Keys
+
+**Patterns**:
+```regex
+api[_-]?key.*[=:]\s*['"][a-zA-Z0-9]{20,}['"]
+apikey.*[=:]\s*['"][a-zA-Z0-9]{20,}['"]
+API_KEY.*[=:]\s*['"][a-zA-Z0-9]{20,}['"]
+x-api-key.*[=:]\s*['"][a-zA-Z0-9]{20,}['"]
+```
+
+**Examples Detected**:
+```javascript
+// ❌ CRITICAL
+const apiKey = "sk_live_abc123def456ghi789jkl012"
+API_KEY="1234567890abcdef1234567890"
+x-api-key: "abcd1234-efgh-5678-ijkl-9012mnop3456"
+
+// ✅ Safe (examples/placeholders)
+const apiKey = "YOUR_API_KEY_HERE"
+API_KEY="<your-api-key>"
+# Example: API_KEY="sk_test_..."
+```
+
+**Remediation**:
+- Use environment variables: `process.env.API_KEY`
+- Add to .gitignore: `.env`, `.env.local`
+- Use secrets management: AWS Secrets Manager, HashiCorp Vault
+- Rotate exposed keys immediately
+
+### 2. Passwords
+
+**Patterns**:
+```regex
+password.*[=:]\s*['"][^'"]{8,}['"]
+passwd.*[=:]\s*['"][^'"]{8,}['"]
+pwd.*[=:]\s*['"][^'"]{8,}['"]
+pass.*[=:]\s*['"][^'"]{8,}['"]
+```
+
+**Examples Detected**:
+```python
+# ❌ CRITICAL
+password = "MySecureP@ssw0rd123"
+db_password="SuperSecret2024!"
+admin_pwd = "admin12345"
+
+# ✅ Safe (examples/placeholders)
+password = "<your-password>"
+password = "********"
+password = os.getenv("DB_PASSWORD")
+```
+
+**Remediation**:
+- Use environment variables
+- Use password managers or secrets vaults
+- Never hardcode passwords
+- Use password hashing (bcrypt, argon2)
+
+### 3. Private Keys
+
+**Patterns**:
+```regex
+-----BEGIN (RSA |DSA |EC )?PRIVATE KEY-----
+-----BEGIN OPENSSH PRIVATE KEY-----
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+```
+
+**Examples Detected**:
+```
+❌ CRITICAL
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA...
+-----END RSA PRIVATE KEY-----
+
+❌ CRITICAL
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAA...
+-----END OPENSSH PRIVATE KEY-----
+```
+
+**Remediation**:
+- Add to .gitignore: `*.pem`, `*.key`, `id_rsa`, `id_ed25519`
+- Use SSH agent or key management
+- Rotate exposed keys immediately
+- Use certificate managers (Let's Encrypt, AWS ACM)
+
+### 4. AWS Credentials
+
+**Patterns**:
+```regex
+AWS_ACCESS_KEY_ID.*[=:]\s*['"]?AKIA[0-9A-Z]{16}['"]?
+AWS_SECRET_ACCESS_KEY.*[=:]\s*['"][a-zA-Z0-9/+=]{40}['"]
+aws_secret_access_key.*[=:]\s*['"][a-zA-Z0-9/+=]{40}['"]
+```
+
+**Examples Detected**:
+```bash
+# ❌ CRITICAL
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# ❌ CRITICAL (Python boto3)
+aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
+aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG"
+
+# ✅ Safe
+AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+boto3.Session(profile_name='default')
+```
+
+**Remediation**:
+- Use AWS IAM roles (EC2, Lambda, ECS)
+- Use AWS profiles: `aws configure --profile`
+- Environment variables with secrets manager
+- Rotate credentials immediately
+- Use AWS Secrets Manager or Parameter Store
+
+### 5. Database Connection Strings
+
+**Patterns**:
+```regex
+(mysql|postgres|mongodb):\/\/[^:]+:[^@]+@
+DATABASE_URL.*[=:]\s*['"]?(mysql|postgres|mongodb):\/\/[^'"]+['"]?
+jdbc:(mysql|postgresql):\/\/[^:]+:[^@]+@
+```
+
+**Examples Detected**:
+```javascript
+// ❌ CRITICAL
+const dbUrl = "mysql://admin:SuperSecret123@localhost:3306/mydb"
+DATABASE_URL="postgres://user:pass123@db.example.com:5432/prod"
+
+// ❌ CRITICAL (MongoDB)
+mongoose.connect("mongodb://admin:password@cluster0.mongodb.net/mydb")
+
+// ✅ Safe
+const dbUrl = process.env.DATABASE_URL
+DATABASE_URL="postgres://user@localhost/dbname"  // No password
+```
+
+**Remediation**:
+- Use environment variables
+- Use connection pooling with IAM authentication
+- Use managed database services with IAM roles
+- Never commit connection strings with passwords
+
+### 6. Bearer Tokens
+
+**Patterns**:
+```regex
+Bearer\s+[A-Za-z0-9\-._~+\/]+=*
+Authorization:\s*Bearer\s+[A-Za-z0-9\-._~+\/]+=*
+```
+
+**Examples Detected**:
+```javascript
+// ⚠️ HIGH (Warning)
+headers: {
+  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+// ✅ Safe
+headers: {
+  Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+}
+```
+
+**Remediation**:
+- Use environment variables
+- Implement token rotation
+- Use short-lived tokens
+- Clear tokens after use
+
+### 7. OAuth Secrets
+
+**Patterns**:
+```regex
+client_secret.*[=:]\s*['"][a-zA-Z0-9_-]{20,}['"]
+oauth.*secret.*[=:]\s*['"][a-zA-Z0-9_-]{20,}['"]
+```
+
+**Examples Detected**:
+```javascript
+// ❌ CRITICAL
+const clientSecret = "abc123_secret_xyz789_secret_key"
+OAUTH_CLIENT_SECRET="9876543210abcdefghij"
+
+// ✅ Safe
+const clientSecret = process.env.OAUTH_CLIENT_SECRET
+```
+
+**Remediation**:
+- Use environment variables
+- Use OAuth provider's SDK
+- Rotate secrets if exposed
+- Use server-side OAuth flow
+
+### 8. Tokens and Session IDs
+
+**Patterns**:
+```regex
+token.*[=:]\s*['"][a-zA-Z0-9_-]{32,}['"]
+session.*[=:]\s*['"][a-zA-Z0-9_-]{32,}['"]
+jwt.*[=:]\s*['"]eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+['"]
+```
+
+**Examples Detected**:
+```python
+# ⚠️ HIGH (Warning)
+token = "abc123def456ghi789jkl012mno345pqr678"
+session_id = "s:j8kf9s8d7f6g5h4j3k2l1m0n9o8p7q6r"
+
+# ✅ Safe
+token = os.environ.get("AUTH_TOKEN")
+session_id = request.cookies.get("session")
+```
+
+**Remediation**:
+- Use secure session management
+- Implement token expiration
+- Use httpOnly cookies
+- Don't log tokens
+
+## Validation Process
+
+### Step 1: Get Git Diff
+```bash
+# Get diff for all changed files
+git diff HEAD
+
+# Get diff for staged files only
+git diff --cached
+```
+
+### Step 2: Scan for Patterns
+```javascript
+function scanForSecurityIssues(diff) {
+  const issues = []
+
+  // CRITICAL patterns
+  const criticalPatterns = [
+    { regex: /api[_-]?key.*[=:]\s*['"][a-zA-Z0-9]{20,}['"]/gi, severity: 'CRITICAL', type: 'API Key' },
+    { regex: /password.*[=:]\s*['"][^'"]{8,}['"]/gi, severity: 'CRITICAL', type: 'Password' },
+    { regex: /-----BEGIN (RSA |DSA |EC )?PRIVATE KEY-----/gi, severity: 'CRITICAL', type: 'Private Key' },
+    { regex: /AWS_ACCESS_KEY_ID.*[=:]\s*['"]?AKIA[0-9A-Z]{16}['"]?/gi, severity: 'CRITICAL', type: 'AWS Access Key' },
+    { regex: /AWS_SECRET_ACCESS_KEY.*[=:]\s*['"][a-zA-Z0-9/+=]{40}['"]/gi, severity: 'CRITICAL', type: 'AWS Secret Key' },
+    { regex: /(mysql|postgres|mongodb):\/\/[^:]+:[^@]+@/gi, severity: 'CRITICAL', type: 'Database Credentials' }
+  ]
+
+  // HIGH severity patterns
+  const highPatterns = [
+    { regex: /Bearer\s+[A-Za-z0-9\-._~+\/]+=*/gi, severity: 'HIGH', type: 'Bearer Token' },
+    { regex: /client_secret.*[=:]\s*['"][a-zA-Z0-9_-]{20,}['"]/gi, severity: 'HIGH', type: 'OAuth Secret' }
+  ]
+
+  // Scan diff
+  for (const pattern of [...criticalPatterns, ...highPatterns]) {
+    const matches = diff.match(pattern.regex)
+    if (matches) {
+      issues.push({
+        severity: pattern.severity,
+        type: pattern.type,
+        pattern: pattern.regex.toString(),
+        matches: matches.length,
+        samples: matches.slice(0, 3)  // First 3 matches
+      })
+    }
+  }
+
+  return issues
+}
+```
+
+### Step 3: Determine Action
+```javascript
+function determineAction(issues) {
+  const hasCritical = issues.some(i => i.severity === 'CRITICAL')
+  const hasHigh = issues.some(i => i.severity === 'HIGH')
+
+  if (hasCritical) {
+    return {
+      action: 'BLOCK',
+      message: 'CRITICAL security issues detected - commit blocked',
+      issues: issues.filter(i => i.severity === 'CRITICAL')
+    }
+  }
+
+  if (hasHigh) {
+    return {
+      action: 'WARN',
+      message: 'HIGH severity security issues detected - review required',
+      issues: issues.filter(i => i.severity === 'HIGH')
+    }
+  }
+
+  return {
+    action: 'ALLOW',
+    message: 'No security issues detected'
+  }
+}
+```
+
+## Remediation Guide
+
+### Immediate Actions (CRITICAL Issues)
+
+1. **Stop the commit**:
+   ```bash
+   # Do not commit
+   git reset
+   ```
+
+2. **Remove sensitive data**:
+   ```bash
+   # Edit files to remove secrets
+   git diff  # Verify secrets removed
+   ```
+
+3. **Use environment variables**:
+   ```javascript
+   // Before (❌)
+   const apiKey = "sk_live_abc123..."
+
+   // After (✅)
+   const apiKey = process.env.API_KEY
+   ```
+
+4. **Add to .gitignore**:
+   ```
+   .env
+   .env.local
+   .env.*.local
+   *.pem
+   *.key
+   credentials.json
+   secrets.yaml
+   ```
+
+5. **Rotate credentials**:
+   - Immediately invalidate exposed keys
+   - Generate new credentials
+   - Update all services
+
+### Prevention Strategies
+
+1. **Use git hooks** (pre-commit):
+   ```bash
+   # .git/hooks/pre-commit
+   #!/bin/bash
+   if git diff --cached | grep -E "password.*=|api.*key.*="; then
+     echo "Error: Potential secret detected"
+     exit 1
+   fi
+   ```
+
+2. **Use git-secrets**:
+   ```bash
+   # Install git-secrets
+   brew install git-secrets
+
+   # Setup for repository
+   git secrets --install
+   git secrets --register-aws
+   ```
+
+3. **Use environment variables**:
+   ```javascript
+   // Load from .env (use dotenv)
+   require('dotenv').config()
+
+   const config = {
+     apiKey: process.env.API_KEY,
+     dbPassword: process.env.DB_PASSWORD
+   }
+   ```
+
+4. **Use secrets management**:
+   - AWS Secrets Manager
+   - HashiCorp Vault
+   - Azure Key Vault
+   - Google Secret Manager
+
+## False Positive Handling
+
+### Safe Patterns (Exclude from Detection)
+
+```javascript
+// Example/documentation code
+const API_KEY = "YOUR_API_KEY_HERE"
+const API_KEY = "<your-api-key>"
+const API_KEY = "sk_test_..."  // Test mode key
+const password = "********"
+const password = "placeholder"
+
+// Comments/documentation
+// Example: API_KEY="abc123"
+# Set your API key: export API_KEY="..."
+
+// Template strings
+const envExample = `
+API_KEY=your_api_key_here
+DB_PASSWORD=your_password_here
+`
+```
+
+### Detection Refinement
+```javascript
+function isLikelyFalsePositive(match) {
+  // Check if in comment
+  if (match.includes('//') || match.includes('#')) return true
+
+  // Check for placeholder values
+  const placeholders = ['YOUR_', '<your-', 'placeholder', 'example', '********', 'xxx', 'TODO']
+  if (placeholders.some(p => match.toUpperCase().includes(p.toUpperCase()))) return true
+
+  // Check for test/example keys
+  if (match.includes('_test_') || match.includes('_example_')) return true
+
+  return false
+}
+```
+
+## Security Validation Report Format
+
+```json
+{
+  "validation_timestamp": "2025-01-21T14:35:30Z",
+  "security_status": "blocked",
+  "security_checks": [
+    {
+      "severity": "CRITICAL",
+      "type": "API Key",
+      "message": "API key detected in diff",
+      "file": "src/config.js",
+      "pattern": "api[_-]?key.*=.*['\"]",
+      "remediation": [
+        "Remove API key from code",
+        "Use environment variable: process.env.API_KEY",
+        "Add .env to .gitignore",
+        "Rotate exposed API key immediately"
+      ]
+    }
+  ],
+  "recommendations": [
+    "Use environment variables for all sensitive data",
+    "Enable git-secrets or similar pre-commit hooks",
+    "Review .gitignore for sensitive files"
+  ]
+}
+```
+
+## References
+
+- OWASP Secrets Management: https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password
+- Git-secrets: https://github.com/awslabs/git-secrets
+- GitHub Secret Scanning: https://docs.github.com/en/code-security/secret-scanning
+- AWS Secrets Manager: https://aws.amazon.com/secrets-manager/
