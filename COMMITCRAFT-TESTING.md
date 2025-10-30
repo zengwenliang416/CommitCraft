@@ -187,7 +187,7 @@ git add -A
 
 ```bash
 # 创建包含敏感信息的文件
-echo 'const apiKey = "sk_live_abc123def456ghi789jkl012"' > test-commits/src/config.js
+echo 'const apiKey = "sk_live_EXAMPLE_KEY_DO_NOT_USE"' > test-commits/src/config.js
 git add test-commits/src/config.js
 ```
 
